@@ -78,7 +78,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/12/10/Download-with-Python/">Download with Python</a>
+      <a class="article-title" href="/2020/12/10/Download-with-Python/">测量耳机的频响</a>
     </h1>
   
 
@@ -86,15 +86,50 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>In this post, I’ll teach you how to download a dataset with python. This technique is really useful when writing a machine learning algorithm. There are three ways by which we can download a dataset, namely by using <em>urllib</em>, <em>urllib2</em> or <em>request</em> library.  </p>
-<h2 id="Using-urllib"><a href="#Using-urllib" class="headerlink" title="Using urllib"></a>Using <em>urllib</em></h2>
+        <h1 id="关于如何测量耳机的频响曲线"><a href="#关于如何测量耳机的频响曲线" class="headerlink" title="关于如何测量耳机的频响曲线"></a>关于如何测量耳机的频响曲线</h1><h2 id="没有采用业界的标准规范"><a href="#没有采用业界的标准规范" class="headerlink" title="没有采用业界的标准规范"></a>没有采用业界的标准规范</h2><p>将测量耳机的频响曲线想的过于简单。最开始认为只要有人工头，Pulse等仪器，就可以测量出结果。以至于测量了两次耳机的频响曲线，我们测试的过程很随意。我们测试的环境不能说是一样的：使用的白噪声，扬声器与耳机的距离等变量都有变化，没有采用扫频而是使用FFT等。这显然是不符合我们标准化耳机的初衷的。其实，正如匡老师所说，怎么测量频响其实是有一套标准化流程的，但很不幸，我们没有采用这套流程。</p>
+<h2 id="从喇叭的频率响应说起"><a href="#从喇叭的频率响应说起" class="headerlink" title="从喇叭的频率响应说起"></a>从喇叭的频率响应说起</h2><blockquote>
+<p> 一般在测量喇叭响应频率时，业界的标准是将喇叭单体放置于国际电工委员会标准障板上，或是将喇叭音箱放置在离地 1～1.5 公尺的高度，然后将麦克风放置距离喇叭 1 公尺的中心轴在线，并且在无响室内进行测量，一个精准的喇叭理论上该提供平直的响应曲线，这是业界测试喇叭频率响应的标准。</p>
+<p><a target="_blank" rel="noopener" href="https://www.techbang.com/posts/24620-easily-read-headphone-measurement-data-frequency-response-a-headphone-measurement-chart-detail">https://www.techbang.com/posts/24620-easily-read-headphone-measurement-data-frequency-response-a-headphone-measurement-chart-detail</a></p>
+</blockquote>
+<p><img src="C:\Users\Mypur\Desktop\30978475297b2c9479b200aa38612b05.jpg" alt="三种曲线"></p>
+<p>测量喇叭的频响确实是有一套标准的流程的，但是耳机的频响要比喇叭复杂很多。多数的耳机设计根据扩散场均衡曲线，因此，这也应该是我们测量的目标。</p>
+<p>应该在有反射，有扩散的空间下进行测量频响曲线，但是更加具体的标准化测量流程在中文互联网上似乎没有更多的信息。(对于耳机，似乎根本就没有一套标准化的流程，而且，不同网站给出的耳机频响曲线也没有比较的意义)</p>
+<h2 id="IEC的标准"><a href="#IEC的标准" class="headerlink" title="IEC的标准"></a>IEC的标准</h2><p><img src="C:\Users\Mypur\Desktop\4545.PNG"></p>
+<p>首先在IEC的官网上搜索，看看能不能找到一套标准的规范，他们确实是有规范，但是更多的是对人工耳的要求。<a target="_blank" rel="noopener" href="https://webstore.iec.ch/publication/34383">https://webstore.iec.ch/publication/34383</a></p>
+<p>直接在他们的官网上搜索Frequency Response， 得到的是这些：</p>
+<p><img src="C:\Users\Mypur\Desktop\4545.PNG"></p>
+<p>对于变电器的测试规范，看来确实没有权威的机构制定出测量耳机频响的标准。</p>
+<h2 id="不那么权威的规范"><a href="#不那么权威的规范" class="headerlink" title="不那么权威的规范"></a>不那么权威的规范</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://www.rtings.com/headphones/tests/sound-quality/raw-frequency-response">Rtings</a></li>
+</ol>
+<p><img src="C:\Users\Mypur\Desktop\4545.PNG"></p>
+<ol start="2">
+<li><a target="_blank" rel="noopener" href="https://crinacle.com/graphs/headphones/">In-Ear Fidelity</a></li>
+</ol>
+<p><img src="C:\Users\Mypur\Desktop\4545.PNG"></p>
+<p>与Rtings不同，这个网站有一个大大的Disclaimer，没有测试流程。</p>
+<ol start="3">
+<li><a target="_blank" rel="noopener" href="https://mynewmicrophone.com/what-is-headphone-frequency-response-what-is-a-good-range/">Arthur Fox</a></li>
+</ol>
+<p><img src="C:\Users\Mypur\Desktop\4545.PNG"></p>
+<p>也给出了一个测量耳机频响的流程。</p>
+<h2 id="我们该怎么做"><a href="#我们该怎么做" class="headerlink" title="我们该怎么做"></a>我们该怎么做</h2><p>以上的资料对于测量过程都有很好的介绍。对我而言，我认为最重要的是一致性。我们要保证测试环境的一致性，测试的信号前后不能变，仪器应该符合IEC的要求。因此：</p>
+<ol>
+<li>扩散场意味着到混响室去测</li>
+<li>人工头就用实验室的人工头</li>
+<li>将扫频正弦波送到耳机中，并且幅度是一致的正弦波，范围20Hz-20KHz(频率范围应该根据我们的人工头决定)</li>
+<li>将耳机多次摆放，在不同的音量下多次测量</li>
+<li>测量过一次后，应该将配置保存起来，以后继续使用</li>
+<li>我们需要多个耳罩以及若干耳塞(测降噪时需要)</li>
+</ol>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/12/10/Download-with-Python/" data-id="ckijko14m0001l0uhbxjm9ap7" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/12/10/Download-with-Python/" data-id="ckijpkuah000148uhgp7r0187" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python-Data-Science-Sci-kit-Learn/" rel="tag">Python, Data Science, Sci-kit Learn</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%80%B3%E6%9C%BA%EF%BC%8C%E9%A2%91%E7%8E%87%E5%93%8D%E5%BA%94%EF%BC%8C%E8%A7%84%E8%8C%83/" rel="tag">耳机，频率响应，规范</a></li></ul>
 
     </footer>
   </div>
@@ -142,7 +177,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/12/10/hello-world/" data-id="ckijko14b0000l0uhe5ct41hi" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/12/10/hello-world/" data-id="ckijpkua7000048uh4j553nhk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -165,7 +200,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python-Data-Science-Sci-kit-Learn/" rel="tag">Python, Data Science, Sci-kit Learn</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%80%B3%E6%9C%BA%EF%BC%8C%E9%A2%91%E7%8E%87%E5%93%8D%E5%BA%94%EF%BC%8C%E8%A7%84%E8%8C%83/" rel="tag">耳机，频率响应，规范</a></li></ul>
     </div>
   </div>
 
@@ -175,7 +210,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Python-Data-Science-Sci-kit-Learn/" style="font-size: 10px;">Python, Data Science, Sci-kit Learn</a>
+      <a href="/tags/%E8%80%B3%E6%9C%BA%EF%BC%8C%E9%A2%91%E7%8E%87%E5%93%8D%E5%BA%94%EF%BC%8C%E8%A7%84%E8%8C%83/" style="font-size: 10px;">耳机，频率响应，规范</a>
     </div>
   </div>
 
@@ -197,7 +232,7 @@
       <ul>
         
           <li>
-            <a href="/2020/12/10/Download-with-Python/">Download with Python</a>
+            <a href="/2020/12/10/Download-with-Python/">测量耳机的频响</a>
           </li>
         
           <li>
