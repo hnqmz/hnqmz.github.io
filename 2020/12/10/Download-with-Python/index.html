@@ -5,14 +5,14 @@
   
 
   
-  <title>测量耳机的频响 | Hexo</title>
+  <title>关于如何测量耳机的频响曲线 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="关于如何测量耳机的频响曲线没有采用业界的标准规范将测量耳机的频响曲线想的过于简单。最开始认为只要有人工头，Pulse等仪器，就可以测量出结果。以至于测量了两次耳机的频响曲线，我们测试的过程很随意。我们测试的环境不能说是一样的：使用的白噪声，扬声器与耳机的距离等变量都有变化，没有采用扫频而是使用FFT等。这显然是不符合我们标准化耳机的初衷的。其实，正如匡老师所说，怎么测量频响其实是有一套标准化流程的">
+  <meta name="description" content="没有采用业界的标准规范将测量耳机的频响曲线想的过于简单。最开始认为只要有人工头，Pulse等仪器，就可以测量出结果。以至于测量了两次耳机的频响曲线，我们测试的过程很随意。我们测试的环境不能说是一样的：使用的白噪声，扬声器与耳机的距离等变量都有变化，没有采用扫频而是使用FFT等。这显然是不符合我们标准化耳机的初衷的。其实，正如匡老师所说，怎么测量频响其实是有一套标准化流程的，但很不幸，我们没有采用这">
 <meta property="og:type" content="article">
-<meta property="og:title" content="测量耳机的频响">
+<meta property="og:title" content="关于如何测量耳机的频响曲线">
 <meta property="og:url" content="http://example.com/2020/12/10/Download-with-Python/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="关于如何测量耳机的频响曲线没有采用业界的标准规范将测量耳机的频响曲线想的过于简单。最开始认为只要有人工头，Pulse等仪器，就可以测量出结果。以至于测量了两次耳机的频响曲线，我们测试的过程很随意。我们测试的环境不能说是一样的：使用的白噪声，扬声器与耳机的距离等变量都有变化，没有采用扫频而是使用FFT等。这显然是不符合我们标准化耳机的初衷的。其实，正如匡老师所说，怎么测量频响其实是有一套标准化流程的">
+<meta property="og:description" content="没有采用业界的标准规范将测量耳机的频响曲线想的过于简单。最开始认为只要有人工头，Pulse等仪器，就可以测量出结果。以至于测量了两次耳机的频响曲线，我们测试的过程很随意。我们测试的环境不能说是一样的：使用的白噪声，扬声器与耳机的距离等变量都有变化，没有采用扫频而是使用FFT等。这显然是不符合我们标准化耳机的初衷的。其实，正如匡老师所说，怎么测量频响其实是有一套标准化流程的，但很不幸，我们没有采用这">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://tvax2.sinaimg.cn/large/006dgyGJgy1gljvvmjz6gj30iv0e73z5.jpg">
 <meta property="og:image" content="https://tva3.sinaimg.cn/large/006dgyGJgy1gljvw366vpj317k0y77bn.jpg">
@@ -21,7 +21,7 @@
 <meta property="og:image" content="https://tva3.sinaimg.cn/large/006dgyGJgy1gljvxy9ci5j30oy0xw422.jpg">
 <meta property="og:image" content="https://tva2.sinaimg.cn/large/006dgyGJgy1gljvy88sjwj30si0wwadv.jpg">
 <meta property="article:published_time" content="2020-12-10T02:19:59.000Z">
-<meta property="article:modified_time" content="2020-12-11T06:11:04.000Z">
+<meta property="article:modified_time" content="2020-12-11T06:15:24.000Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="耳机，频率响应，规范">
 <meta name="twitter:card" content="summary">
@@ -88,7 +88,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      测量耳机的频响
+      关于如何测量耳机的频响曲线
     </h1>
   
 
@@ -96,7 +96,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="关于如何测量耳机的频响曲线"><a href="#关于如何测量耳机的频响曲线" class="headerlink" title="关于如何测量耳机的频响曲线"></a>关于如何测量耳机的频响曲线</h1><h2 id="没有采用业界的标准规范"><a href="#没有采用业界的标准规范" class="headerlink" title="没有采用业界的标准规范"></a>没有采用业界的标准规范</h2><p>将测量耳机的频响曲线想的过于简单。最开始认为只要有人工头，Pulse等仪器，就可以测量出结果。以至于测量了两次耳机的频响曲线，我们测试的过程很随意。我们测试的环境不能说是一样的：使用的白噪声，扬声器与耳机的距离等变量都有变化，没有采用扫频而是使用FFT等。这显然是不符合我们标准化耳机的初衷的。其实，正如匡老师所说，怎么测量频响其实是有一套标准化流程的，但很不幸，我们没有采用这套流程。</p>
+        <h2 id="没有采用业界的标准规范"><a href="#没有采用业界的标准规范" class="headerlink" title="没有采用业界的标准规范"></a>没有采用业界的标准规范</h2><p>将测量耳机的频响曲线想的过于简单。最开始认为只要有人工头，Pulse等仪器，就可以测量出结果。以至于测量了两次耳机的频响曲线，我们测试的过程很随意。我们测试的环境不能说是一样的：使用的白噪声，扬声器与耳机的距离等变量都有变化，没有采用扫频而是使用FFT等。这显然是不符合我们标准化耳机的初衷的。其实，正如匡老师所说，怎么测量频响其实是有一套标准化流程的，但很不幸，我们没有采用这套流程。</p>
 <h2 id="从喇叭的频率响应说起"><a href="#从喇叭的频率响应说起" class="headerlink" title="从喇叭的频率响应说起"></a>从喇叭的频率响应说起</h2><blockquote>
 <p> 一般在测量喇叭响应频率时，业界的标准是将喇叭单体放置于国际电工委员会标准障板上，或是将喇叭音箱放置在离地 1～1.5 公尺的高度，然后将麦克风放置距离喇叭 1 公尺的中心轴在线，并且在无响室内进行测量，一个精准的喇叭理论上该提供平直的响应曲线，这是业界测试喇叭频率响应的标准。</p>
 <p><a target="_blank" rel="noopener" href="https://www.techbang.com/posts/24620-easily-read-headphone-measurement-data-frequency-response-a-headphone-measurement-chart-detail">https://www.techbang.com/posts/24620-easily-read-headphone-measurement-data-frequency-response-a-headphone-measurement-chart-detail</a></p>
@@ -136,7 +136,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/12/10/Download-with-Python/" data-id="ckijvidgs0001h8uheo496p6w" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/12/10/Download-with-Python/" data-id="ckijvnlcb000160uhape5fi9z" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%80%B3%E6%9C%BA%EF%BC%8C%E9%A2%91%E7%8E%87%E5%93%8D%E5%BA%94%EF%BC%8C%E8%A7%84%E8%8C%83/" rel="tag">耳机，频率响应，规范</a></li></ul>
@@ -201,7 +201,7 @@
       <ul>
         
           <li>
-            <a href="/2020/12/10/Download-with-Python/">测量耳机的频响</a>
+            <a href="/2020/12/10/Download-with-Python/">关于如何测量耳机的频响曲线</a>
           </li>
         
           <li>
