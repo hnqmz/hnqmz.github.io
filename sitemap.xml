@@ -2,42 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite-url/2020/12/23/2020-12-21-2020-12-25/</loc>
+    <loc>http://hnqmz.github.io/2020/12/23/2020-12-21-2020-12-25/</loc>
     
     <lastmod>2020-12-24</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite-url/tags/index.html</loc>
+    <loc>http://hnqmz.github.io/tags/index.html</loc>
     
     <lastmod>2020-12-24</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite-url/404.html</loc>
+    <loc>http://hnqmz.github.io/404.html</loc>
     
     <lastmod>2020-12-24</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite-url/about/index.html</loc>
+    <loc>http://hnqmz.github.io/archive/index.html</loc>
     
     <lastmod>2020-12-24</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite-url/categories/index.html</loc>
+    <loc>http://hnqmz.github.io/about/index.html</loc>
     
     <lastmod>2020-12-24</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite-url/archive/index.html</loc>
+    <loc>http://hnqmz.github.io/categories/index.html</loc>
     
     <lastmod>2020-12-24</lastmod>
     
@@ -45,7 +45,7 @@
   
 
   <url>
-    <loc>http://yoursite-url/</loc>
+    <loc>http://hnqmz.github.io/</loc>
     <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -53,7 +53,7 @@
 
   
   <url>
-    <loc>http://yoursite-url/tags/Coding-Statistics/</loc>
+    <loc>http://hnqmz.github.io/tags/Coding-Statistics/</loc>
     <lastmod>2020-12-24</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
