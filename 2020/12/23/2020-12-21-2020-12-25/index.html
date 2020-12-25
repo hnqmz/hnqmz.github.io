@@ -177,13 +177,6 @@
 
           
           <li>
-            <a href="/archive/">Archives</a>
-          </li>
-          
-          
-
-          
-          <li>
             <a href="/about/">About</a>
           </li>
           
@@ -191,14 +184,21 @@
 
           
           <li>
-            <a href="/tags/">Tags</a>
+            <a href="/categories/">Categories</a>
           </li>
           
           
 
           
           <li>
-            <a href="/categories/">Categories</a>
+            <a href="/archive/">Archives</a>
+          </li>
+          
+          
+
+          
+          <li>
+            <a href="/tags/">Tags</a>
           </li>
           
           
@@ -357,7 +357,7 @@
 <p>The above procedures seem really easy, however, there are huge amounts of problems I have encountered. Like:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ImportError: No module named <span class="string">'_pywrap_tensorflow_internal'</span></span><br></pre></td></tr></table></figure>
 
-<p>And I spend a lot of time searching on Google to solve those problems. Finally, after pondering for one day, I successfully installed them and run a MNIST classification program on my own computer:</p>
+<p>And I spend a lot of time searching on Google to solve those problems. Finally, after pondering for one day, I successfully installed them and ran a MNIST classification program on my own computer:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf </span><br><span class="line"><span class="keyword">from</span> tensorflow.keras.layers <span class="keyword">import</span> Dense</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras.datasets <span class="keyword">import</span> mnist</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras.models <span class="keyword">import</span> Sequential</span><br><span class="line"></span><br><span class="line">(x_tr, y_tr), (x_te, y_te)=mnist.load_data()</span><br><span class="line">x_tr=x_tr.astype(<span class="string">'float32'</span>)/<span class="number">255</span></span><br><span class="line">x_tr=x_tr.reshape(x_tr.shape[<span class="number">0</span>], <span class="number">28</span>*<span class="number">28</span>)</span><br><span class="line"></span><br><span class="line">x_te=x_te.astype(<span class="string">'float32'</span>)/<span class="number">255</span></span><br><span class="line">x_te=x_te.reshape(x_te.shape[<span class="number">0</span>], <span class="number">28</span>*<span class="number">28</span>)</span><br><span class="line"></span><br><span class="line">model=Sequential()</span><br><span class="line">model.add(Dense(<span class="number">128</span>, activation=<span class="string">'relu'</span>, input_shape=(<span class="number">28</span>*<span class="number">28</span>, )))</span><br><span class="line">model.add(Dense(<span class="number">200</span>, activation=<span class="string">'relu'</span>))</span><br><span class="line">model.add(Dense(<span class="number">10</span>, activation=<span class="string">'softmax'</span>))</span><br><span class="line">model.compile(optimizer=<span class="string">'rmsprop'</span>, loss=<span class="string">'sparse_categorical_crossentropy'</span>, metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line"> </span><br><span class="line">model.fit(x_tr, y_tr, epochs=<span class="number">10</span>, batch_size=<span class="number">64</span>, validation_split=<span class="number">0.2</span>)</span><br></pre></td></tr></table></figure>
 
 <p><img src="https://tvax3.sinaimg.cn/large/006dgyGJgy1glyoupyqw9j30zm0cwq42.jpg" alt="捕获"></p>
@@ -384,9 +384,10 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> numpy.random <span class="keyword">import</span> randn</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras.models <span class="keyword">import</span> load_model</span><br><span class="line">%matplotlib inline</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">plot_generated</span><span class="params">(examples, n)</span>:</span></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(n*n):</span><br><span class="line">        plt.subplot(n, n, <span class="number">1</span>+i)</span><br><span class="line">        plt.axis(<span class="string">'off'</span>)</span><br><span class="line">        plt.imshow(examples[i, :, :])</span><br><span class="line"></span><br><span class="line">model=load_model(<span class="string">'generator_model_030.h5'</span>)</span><br><span class="line">model=g_model</span><br><span class="line">latent_points=generate_latent_points(<span class="number">100</span>, <span class="number">25</span>)</span><br><span class="line">x=model.predict(latent_points)</span><br><span class="line">plot_generated(x, <span class="number">5</span>)<span class="comment">#plot them in a 5*5 grid</span></span><br></pre></td></tr></table></figure>
 
 <p><img src="https://tvax4.sinaimg.cn/large/006dgyGJgy1glyzzy7nzxj30c708l78g.jpg" alt="1"></p>
-<p>Then, let’s explore the latent space. We need generate a lot of pictures and save them along with their latent vectors. Then, find the pictures with the feature of interest. And we can do arithmetic on these vectors to generate the pictures we want. (Train longer and use a more pictures will enhance the quality of the generated pictures, I only use 10k pictures(total number of pictures of CelebA is 200k) and trained it for 30 epochs.)</p>
-<p>For example, if we want to perform this formula:</p>
-<p>$$<br>smiling \ woman - neural \ woman + neural \ man = smiling \ man<br>$$<br>Then, our results will look like this:</p>
+<p>Then, let’s explore the latent space. We need generate a lot of pictures and save them along with their latent vectors. Then, find the pictures with the feature of interest. And we can do arithmetic on these vectors to generate the pictures we want. (Train longer and use more pictures will enhance the quality of the generated pictures, I only use 10k pictures(total number of pictures of CelebA is 200k) and trained it for 30 epochs.)</p>
+<p>For example, if we want to perform this formula: </p>
+<p>​                                                                                 smiling  woman - neural  woman + neural  man = smiling  man </p>
+<p>Then, our results will look like this:</p>
 <p><img src="https://tva1.sinaimg.cn/large/006dgyGJgy1glyymrs8afj31070r2e82.jpg" alt="捕获"></p>
 <p><img src="https://tvax4.sinaimg.cn/large/006dgyGJgy1glyyoagir7j30ht0ho7rj.jpg" alt="捕获"></p>
 <h2 id="Miscellaneous"><a href="#Miscellaneous" class="headerlink" title="Miscellaneous"></a>Miscellaneous</h2><p>Alongside neural network, traditional machine learning algorithms are also of importance. In this week, I learned the exponential family and general linear model. I also learned some theory of functions of a real variable, which is becoming more and more important in GAN research since the appearance of WGAN. </p>
