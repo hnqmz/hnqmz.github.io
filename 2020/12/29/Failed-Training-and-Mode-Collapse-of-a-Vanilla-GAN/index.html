@@ -47,12 +47,12 @@
 
   <!-- Pygments Highlight CSS -->
   
-<link rel="stylesheet" href="../../../css/highlight.css">
-<link rel="stylesheet" href="../../../css/widget.css">
-<link rel="stylesheet" href="../../../css/rocket.css">
-<link rel="stylesheet" href="../../../css/signature.css">
-<link rel="stylesheet" href="../../../css/catalog.css">
-<link rel="stylesheet" href="../../../css/livemylife.css">
+<link rel="stylesheet" href="../../../../css/highlight.css">
+<link rel="stylesheet" href="../../../../css/widget.css">
+<link rel="stylesheet" href="../../../../css/rocket.css">
+<link rel="stylesheet" href="../../../../css/signature.css">
+<link rel="stylesheet" href="../../../../css/catalog.css">
+<link rel="stylesheet" href="../../../../css/livemylife.css">
 
 
   
@@ -105,10 +105,10 @@
   <!--[if lt IE 9]> <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script> <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script> <![endif]-->
 
   <!-- ga & ba script hoook -->
-  <link rel="canonical" href="http://hnqmz.github.io/archives/2020/12/">
+  <link rel="canonical" href="http://hnqmz.github.io/2020/12/29/Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN/">
   <title>
     
-    This guy knows nothing
+    Failed Training and Mode Collapse of a Vanilla GAN - This guy knows nothing
     
   </title>
 <meta name="generator" content="Hexo 4.2.1"></head>
@@ -256,8 +256,8 @@
 
   <style type="text/css">
     header.intro-header {
-       /*page*/
-        background-image: url('/img/header_img/archive_bg2.jpg');
+       /*post*/
+        background-image: url('');
       
     }
 
@@ -275,10 +275,23 @@
       <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
           
-          <div class="site-heading">
-            <h1>Changtao&#39;s Blog</h1>
-            <!--<hr class="small">-->
-            <span class="subheading">A place to write down my thoughts</span>
+          <div class="post-heading">
+            <div class="tags">
+              
+              <a class="tag" href="/tags/#Generative Model, Deep Learning" title="Generative Model, Deep Learning">Generative Model, Deep Learning</a>
+              
+            </div>
+            <h1>Failed Training and Mode Collapse of a Vanilla GAN</h1>
+            <h2 class="subheading"></h2>
+            <span class="meta">
+              Posted by Changtao Li on
+              2020-12-29
+            </span>
+
+
+            
+
+
           </div>
           
         </div>
@@ -319,206 +332,202 @@
 	Friends Blog、
 	anchorjs、
 	) -->
-	<!-- Main Content -->
-<div class="container">
-  <div class="row">
-    
+	<!-- Modify by Yu-Hsuan Yen -->
+<!-- Post Content -->
+<article>
+  <div class="container">
+    <div class="row">
+      <!-- Post Container -->
+      <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1 post-container">
 
-    <!-- USE SIDEBAR -->
-    <!-- Post Container -->
-    <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
+        <p>GANs are notorious for their difficulty of being trained. Without well-chosen parameters, it’s common to see convergence failure and mode collapse during training a GAN. M,  Arjovsky has analyzed  the problem lie behind vanilla GANs in his famous paper :<a href="https://arxiv.org/abs/1701.07875" target="_blank" rel="noopener">Wasserstein GAN</a>. Today, we can train a GAN more easily by switching the objective function from KLD to Earth Mover. However, vanilla GANs, like DCGAN, are still widely used in some research area. As a consequence,  before stepping into the area of WGAN, I think it’s necessary for me to write a summary about the problems I have encountered when training a vanilla GAN. </p>
+<h2 id="A-Well-Trained-GAN"><a href="#A-Well-Trained-GAN" class="headerlink" title="A Well-Trained GAN"></a>A Well-Trained GAN</h2><p>Let’s first develop some intuitions about a well-trained GAN. As an example, I trained a GAN on MNIST dataset so that the generator would generate some hand-written numbers. I used the parameters from the example Google gave in their TensorFlow tutorial. The generator and the discriminator goes like this:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># the dimension of latent space is 100</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">define_generator</span><span class="params">(latent_dim)</span>:</span></span><br><span class="line">    <span class="comment"># init=RandomNormal(stddev=0.02)</span></span><br><span class="line">    model=Sequential()</span><br><span class="line"></span><br><span class="line">    n_nodes=<span class="number">256</span>*<span class="number">7</span>*<span class="number">7</span></span><br><span class="line">    model.add(Dense(n_nodes, input_dim=latent_dim))</span><br><span class="line">    model.add(BatchNormalization())</span><br><span class="line">    model.add(LeakyReLU())</span><br><span class="line">    model.add(Reshape((<span class="number">7</span>, <span class="number">7</span>, <span class="number">256</span>)))</span><br><span class="line"></span><br><span class="line">    model.add(Conv2DTranspose(<span class="number">128</span>, (<span class="number">5</span>, <span class="number">5</span>), strides=(<span class="number">1</span>, <span class="number">1</span>), padding=<span class="string">'same'</span>, use_bias=<span class="literal">False</span>))</span><br><span class="line">    model.add(BatchNormalization())</span><br><span class="line">    model.add(LeakyReLU()) <span class="comment">#(14, 14, 128)</span></span><br><span class="line"></span><br><span class="line">    model.add(Conv2DTranspose(<span class="number">64</span>, (<span class="number">5</span>, <span class="number">5</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>, use_bias=<span class="literal">False</span>))</span><br><span class="line">    model.add(BatchNormalization())</span><br><span class="line">    model.add(LeakyReLU()) <span class="comment">#(14, 14, 64)</span></span><br><span class="line"></span><br><span class="line">    model.add(Conv2DTranspose(<span class="number">1</span>, (<span class="number">5</span>, <span class="number">5</span>), strides=(<span class="number">2</span>, <span class="number">2</span>),  padding=<span class="string">'same'</span>, activation=<span class="string">'tanh'</span>, use_bias=<span class="literal">False</span>))</span><br><span class="line">    <span class="keyword">return</span> model</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">define_discriminator</span><span class="params">(in_shape=<span class="params">(<span class="number">28</span>, <span class="number">28</span>, <span class="number">1</span>)</span>)</span>:</span></span><br><span class="line">    <span class="comment"># init=RandomNormal(stddev=0.02)</span></span><br><span class="line">    model=Sequential()</span><br><span class="line">    model.add(Conv2D(<span class="number">64</span>, (<span class="number">5</span>, <span class="number">5</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>, input_shape=in_shape))</span><br><span class="line">    <span class="comment"># model.add(BatchNormalization())</span></span><br><span class="line">    model.add(LeakyReLU()) <span class="comment">#(14, 14, 64)</span></span><br><span class="line">    model.add(tf.keras.layers.Dropout(<span class="number">0.3</span>))</span><br><span class="line"></span><br><span class="line">    model.add(Conv2D(<span class="number">128</span>, (<span class="number">5</span>, <span class="number">5</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>))</span><br><span class="line">    <span class="comment"># model.add(BatchNormalization())</span></span><br><span class="line">    model.add(LeakyReLU())<span class="comment">#(7, 7, 64)</span></span><br><span class="line">    model.add(tf.keras.layers.Dropout(<span class="number">0.3</span>))</span><br><span class="line"></span><br><span class="line">    model.add(Flatten())</span><br><span class="line">    model.add(Dense(<span class="number">1</span>, activation=<span class="string">'sigmoid'</span>))</span><br><span class="line"></span><br><span class="line">    opt=Adam(lr=<span class="number">0.0001</span>)</span><br><span class="line">    </span><br><span class="line">    model.compile(optimizer=opt, loss=<span class="string">'binary_crossentropy'</span>, metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
 
-      
-<!-- Main Content -->
-<div class="container">
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1">
-      <!-- 归档列表 -->
+<p>And the training history goes like this:</p>
+<p><img src="Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN%5C1.png" alt="A well trained GAN"></p>
+<p>The loss of the discriminator of the real and fake samples will hover around 0.5. The loss of the generator, however, tends to exceed 1. If your losses look like this in your training process, then, it’s likely you’ll have a well trained GAN. By checking the samples produced by the generator from time to time, if their quality are improving and they are human perceptible, you can assert that you trained a GAN successfully.</p>
+<h2 id="Convergence-Failure"><a href="#Convergence-Failure" class="headerlink" title="Convergence Failure"></a>Convergence Failure</h2><p>Let’s change the generator and the discriminator a bit. Namely, we take the batch normalization from the generator and add it to the discriminator. Thus, you will have a stringer discriminator and a weaker generator.  Then, the history looks like this:</p>
+<p><img src="Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN%5C2.png" alt="Convergence Failure"></p>
+<p>We know that the training process of a GAN is dynamic. After we updating the parameters of discriminator, the optimization problem changes. So, training a GAN is not an optimization problem, it’s a zero-sum game between the generator and the discriminator. In this very case, the discriminator is too strong, the generator, as a result, can not learn and update its parameters. The generator keeps producing rubbishes. So the loss of the discriminator goes directly to 0 and the accuracy goes to 100%. If you see this in your training process, then it’s likely you encounter convergence failure.</p>
+<h2 id="Mode-Collapse"><a href="#Mode-Collapse" class="headerlink" title="Mode Collapse"></a>Mode Collapse</h2><p>Mode collapse is the scenario where the generator maps many latent points to one same point in the data space. To see the occurrence of mode collapse, we simply choose a latent space with dimension 1. The history looks like this:</p>
+<p><img src="Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN%5C3.png" alt="Mode Collapse"></p>
+<p>The history looks just like the GAN we want, except that the loss of GAN jumps up and down. And we can identify a mode collapse easily from the pictures the generator produced, it just keeps producing similar, even identical pattern, like the following pictures:</p>
+<p><img src="Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN%5Cgenerated_plot_3744.png" alt=""></p>
+<p>We should stop the training once we see the above phenomenon and use a larger latent space(Fixing convergence failure will be much more difficult, you have to adjust the hyper-parameters again and again.)</p>
 
-      
 
-      <!-- 归档列表 -->
-
-      
-      <div class="one-tag-list">
-        <span class="fa fa-calendar-times-o listing-seperator" id="2020">
-          <span class="tag-text">2020</span>
-        </span>
-        <ul>
+        <hr>
+        <!-- Pager -->
+        <ul class="pager">
           
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            12-29
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2020/12/29/Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN/" style="color: #0085a1">
-              <span>
-                Failed Training and Mode Collapse of a Vanilla GAN
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
           
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            12-23
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2020/12/23/2020-12-21-2020-12-25/" style="color: #0085a1">
-              <span>
-                Changtao's weekly log (12/25)
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          <li class="next">
+            <a href="/2020/12/23/2020-12-21-2020-12-25/" data-toggle="tooltip" data-placement="top" title="Changtao's weekly log (12/25)">Next Post &rarr;</a>
           </li>
           
         </ul>
-      </div>
-      
 
-
-    </div>
-  </div>
-</div>
-
-
-      <!-- 如果开启评论功能 -->
-      
-    </div>
-
-    <!-- Sidebar Container -->
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
-    
-        <!-- Featured Tags -->
-
-<section>
-  <!-- no hr -->
-  <h5><a href="/tags/">FEATURED TAGS</a></h5>
-  <div class="tags">
-    
-    
-    <a href="/tags/#Coding, Statistics" title="Coding, Statistics" rel="1">Coding, Statistics</a>
-    
-    
-    
-    <a href="/tags/#Generative Model, Deep Learning" title="Generative Model, Deep Learning" rel="1">Generative Model, Deep Learning</a>
-    
-    
-  </div>
-</section>
-
-
-        <hr>
-    
-        <!-- Short About -->
-<section class="visible-md visible-lg">
-  <h5><a href="/about/">ABOUT ME</a></h5>
-  <div class="short-about">
-
-    
-    <img id="avatar_pic" src="/img/avatar/fatpeople.jpg" alt="avatar_pic" style="box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);
-    -moz-box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);
-    -webkit-box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);" />
-    
-
-    
-    <p>This guy knows nothing</p>
-    
-
-    <!-- SNS Link -->
-    <ul class="list-inline">
-      
-
-      
-      <li>
-        <a target="_blank" href="https://github.com/hnqmz">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-    </ul>
-  </div>
-</section>
-
-        <hr>
-    
         
-<!-- <h5>RECENT POSTS</h5> -->
-<h5><a href="/">RECENT POSTS</a></h5>
-<div class="widget">
-  <ul>
-    
-    <a href="../../../2020/12/29/Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN/">
-      <li>Failed Training and Mode Collapse of a Vanilla GAN</li>
-    </a>
-    
-    <a href="../../../2020/12/23/2020-12-21-2020-12-25/">
-      <li>Changtao&#39;s weekly log (12/25)</li>
-    </a>
-    
+        <!-- tip start -->
+        <div class="tip">
+          <p>
+            If you like this blog or find it useful for you, you are also welcome to share this blog, so that more people can participate in it. If the images used in the blog infringe your copyright, please contact the author to delete them. Thank you !
+          </p>
+        </div>
+        <!-- tip end -->
+        
+
+        
+        <!-- Sharing Srtart -->
+        <!-- Social Social Share Post -->
+<!-- Docs:https://github.com/overtrue/share.js -->
+
+<div class="social-share" data-initialized="true" data-disabled="tencent ,douban ,qzone ,linkedin ,facebook ,google ,diandian" data-wechat-qrcode-helper="" align="center">
+  <ul class="list-inline text-center social-share-ul">
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-twitter">
+        <i class="fa fa-twitter fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a class="social-share-icon icon-wechat">
+        <i class="fa fa-weixin fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-weibo">
+        <i class="fa fa-weibo fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-qq">
+        <i class="fa fa-qq fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon" href="mailto:?subject=Failed Training and Mode Collapse of a Vanilla GAN&body=Hi,I found this website and thought you might like it http://hnqmz.github.io/2020/12/29/Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN/">
+        <i class="fa fa-envelope fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
   </ul>
 </div>
 
+<!-- css & js -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css"> -->
+<script defer="defer" async="true" src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
 
-        <hr>
-    
-        <!-- Friends Blog -->
-
-
-        <hr>
-    
+        <!-- Sharing End -->
         
-    <!-- <h5>ARCHIVES</h5> -->
-    <h5><a href="/archives/">ARCHIVES</a></h5>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="">December 2020</a><span class="archive-list-count">2</span></li></ul>
+        <hr>
+
+        <!-- comments start -->
+        <!-- 1. gitalk comment -->
+
+
+
+<!-- 2. gitment comment -->
+
+
+
+<!-- 3. disqus comment -->
+
+
+        <!-- comments end -->
+        <hr>
+
+      </div>
+
+      <!-- Catalog: Tabe of Content -->
+      <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#A-Well-Trained-GAN"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">A Well-Trained GAN</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Convergence-Failure"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Convergence Failure</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Mode-Collapse"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Mode Collapse</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+
+      <!-- Sidebar Container -->
+      <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+        <!-- Featured Tags -->
+        
+        <section>
+          <!-- no hr -->
+          <h5>
+            <a href="/tags/">FEATURED TAGS</a>
+          </h5>
+          <div class="tags">
+            
+            <a class="tag" href="/tags/#Generative Model, Deep Learning" title="Generative Model, Deep Learning">Generative Model, Deep Learning</a>
+            
+          </div>
+        </section>
+        
+
+        <!-- Friends Blog -->
+        
+      </div>
     </div>
-
-
-        <hr>
-    
-        <!-- Categories -->
-
-
-        <hr>
-    
-</div>
-
-    
   </div>
-</div>
+</article>
+
+
+
+<!-- anchorjs start -->
+<!-- async load function -->
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script type="text/javascript">
+  // async load function
+  function async (u, c) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) {
+      o.addEventListener('load', function(e) {
+        c(null, e);
+      }, false);
+    }
+    s.parentNode.insertBefore(o, s);
+  };
+</script>
+<script type="text/javascript">
+  //anchor-js, Doc:http://bryanbraun.github.io/anchorjs/
+  async ("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js", function() {
+    anchors.options = {
+      visible: 'hover',
+      placement: 'left',
+      // icon: 'ℬ'
+      icon: '❡'
+    };
+    anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+  });
+</script>
+<style>
+  /* place left on bigger screen */
+  @media all and (min-width: 800px) {
+    .anchorjs-link {
+      position: absolute;
+      left: -0.75em;
+      font-size: 1.1em;
+      margin-top: -0.1em;
+    }
+  }
+</style>
+
+<!-- anchorjs end -->
+
 
 
 	<!-- Footer (contains ThemeColor、viewer) -->

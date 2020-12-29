@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://hnqmz.github.io/2020/12/29/Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN/</loc>
+    
+    <lastmod>2020-12-29</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://hnqmz.github.io/about/index.html</loc>
     
     <lastmod>2020-12-25</lastmod>
@@ -46,7 +53,7 @@
 
   <url>
     <loc>http://hnqmz.github.io/</loc>
-    <lastmod>2020-12-25</lastmod>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -54,7 +61,14 @@
   
   <url>
     <loc>http://hnqmz.github.io/tags/Coding-Statistics/</loc>
-    <lastmod>2020-12-25</lastmod>
+    <lastmod>2020-12-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://hnqmz.github.io/tags/Generative-Model-Deep-Learning/</loc>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
