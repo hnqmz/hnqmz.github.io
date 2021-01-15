@@ -47,12 +47,12 @@
 
   <!-- Pygments Highlight CSS -->
   
-<link rel="stylesheet" href="../../css/highlight.css">
-<link rel="stylesheet" href="../../css/widget.css">
-<link rel="stylesheet" href="../../css/rocket.css">
-<link rel="stylesheet" href="../../css/signature.css">
-<link rel="stylesheet" href="../../css/catalog.css">
-<link rel="stylesheet" href="../../css/livemylife.css">
+<link rel="stylesheet" href="../../../../css/highlight.css">
+<link rel="stylesheet" href="../../../../css/widget.css">
+<link rel="stylesheet" href="../../../../css/rocket.css">
+<link rel="stylesheet" href="../../../../css/signature.css">
+<link rel="stylesheet" href="../../../../css/catalog.css">
+<link rel="stylesheet" href="../../../../css/livemylife.css">
 
 
   
@@ -105,10 +105,10 @@
   <!--[if lt IE 9]> <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script> <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script> <![endif]-->
 
   <!-- ga & ba script hoook -->
-  <link rel="canonical" href="http://hnqmz.github.io/categories/Deep-Learning/">
+  <link rel="canonical" href="http://hnqmz.github.io/2021/01/12/Varitional-Autoencoder/">
   <title>
     
-    This guy knows nothing
+    Variational Autoencoder - This guy knows nothing
     
   </title>
 <meta name="generator" content="Hexo 4.2.1"></head>
@@ -256,8 +256,8 @@
 
   <style type="text/css">
     header.intro-header {
-       /*page*/
-        background-image: url('/img/header_img/archive_bg2.jpg');
+       /*post*/
+        background-image: url('');
       
     }
 
@@ -275,10 +275,21 @@
       <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
           
-          <div class="site-heading">
-            <h1>Changtao&#39;s Blog</h1>
-            <!--<hr class="small">-->
-            <span class="subheading">A place to write down my thoughts</span>
+          <div class="post-heading">
+            <div class="tags">
+              
+            </div>
+            <h1>Variational Autoencoder</h1>
+            <h2 class="subheading">Another Generative Model</h2>
+            <span class="meta">
+              Posted by Changtao Li on
+              2021-01-12
+            </span>
+
+
+            
+
+
           </div>
           
         </div>
@@ -319,269 +330,205 @@
 	Friends Blog、
 	anchorjs、
 	) -->
-	<!-- Main Content -->
-<div class="container">
-  <div class="row">
-    
+	<!-- Modify by Yu-Hsuan Yen -->
+<!-- Post Content -->
+<article>
+  <div class="container">
+    <div class="row">
+      <!-- Post Container -->
+      <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1 post-container">
 
-    <!-- USE SIDEBAR -->
-    <!-- Post Container -->
-    <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
+        <p>Variational  Autoencoder, along with GAN, are some of the most popular generative model.  A comparison between GAN and VAE can be easily seen in almost every paper concerning generative model. As a consequence, it’s necessary for me to know the principles behind VAE. Unlike GAN, there is a solid and complete math support for VAE, namely Variational Bayes. So, in this blog, I will explain VAE both from a probability perspective and a neural network perspective.  This is also the my main work of this week.</p>
+<h2 id="As-a-Neural-Network"><a href="#As-a-Neural-Network" class="headerlink" title="As a Neural Network"></a>As a Neural Network</h2><p>As we know, autoencoder is a special neural network with a ‘bottleneck’. By imposing this limitation, namely the bottleneck, we force the neural network to learn useful representation of our data. So, we can treat autoencoder as a data compression algorithm(Think PCA if you are not familiar with deep learning). However, this compression is data-specified, meaning the result learned from the data can only be applied to this kind of data. For instance, if the autoencoder was trained on pictures of faces, it, then, will performed badly on pictures of dogs. </p>
+<p>Generally speaking, there is no objective function and target for autoencoder. That’s to say, autoencoder belongs to unsupervised learning. Adding some modification, autoencoder can be used to generate data. And this modification will lead to variational autoencoder, aka VAE.</p>
+<h2 id="Key-Code"><a href="#Key-Code" class="headerlink" title="Key Code"></a>Key Code</h2><p>VAE is composed of two parts: a encoder which map the original data into latent space and a decoder which reconstruct data from the representation in latent space.:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf </span><br><span class="line"><span class="keyword">from</span> tensorflow <span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">from</span> tensorflow.keras <span class="keyword">import</span> layers</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sampling</span><span class="params">(layers.Layer)</span>:</span></span><br><span class="line">    <span class="string">"""sampling from the distribution learned by the encoder"""</span></span><br><span class="line">    <span class="string">""" this layer must be written  """</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">call</span><span class="params">(self, inputs)</span>:</span></span><br><span class="line">        z_mean, z_log_var=inputs </span><br><span class="line">        batch=tf.shape(z_mean)[<span class="number">0</span>]</span><br><span class="line">        dim=tf.shape(z_mean)[<span class="number">1</span>]</span><br><span class="line">        eps=tf.keras.backend.random_normal(shape=(batch, dim))</span><br><span class="line">        <span class="keyword">return</span> z_mean+tf.exp(<span class="number">0.5</span>*z_log_var)*eps</span><br><span class="line"></span><br><span class="line">latent_dim=<span class="number">2</span></span><br><span class="line"></span><br><span class="line">encoder_inputs=keras.Input(shape=(<span class="number">28</span>, <span class="number">28</span>, <span class="number">1</span>))</span><br><span class="line">x=layers.Conv2D(<span class="number">32</span>, <span class="number">3</span>, activation=<span class="string">'relu'</span>, strides=<span class="number">2</span>, padding=<span class="string">'same'</span>)(encoder_inputs)</span><br><span class="line">x=layers.Conv2D(<span class="number">64</span>, <span class="number">3</span>, activation=<span class="string">'relu'</span>, strides=<span class="number">2</span>, padding=<span class="string">'same'</span>)(x)</span><br><span class="line">x=layers.Flatten()(x)</span><br><span class="line">x=layers.Dense(<span class="number">16</span>, activation=<span class="string">'relu'</span>)(x)</span><br><span class="line">z_mean=layers.Dense(latent_dim, name=<span class="string">'z_mean'</span>)(x)</span><br><span class="line">z_log_var=layers.Dense(latent_dim, name=<span class="string">'z_log_var'</span>)(x)</span><br><span class="line">z=Sampling()([z_mean, z_log_var])</span><br><span class="line">encoder=keras.Model(encoder_inputs, [z_mean, z_log_var, z], name=<span class="string">'encoder'</span>)</span><br><span class="line">encoder.summary()</span><br></pre></td></tr></table></figure>
 
-      
-<!-- Main Content -->
-<div class="container">
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1">
-      <!-- 归档列表 -->
+<p><img src="https://tva4.sinaimg.cn/large/006dgyGJgy1gmoewgolj1j30q80e0q3h.jpg" alt="捕获"></p>
+<p>then, the decoder:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">latent_inputs=keras.Input(shape=(latent_dim,))</span><br><span class="line">x=layers.Dense(<span class="number">7</span>*<span class="number">7</span>*<span class="number">64</span>, activation=<span class="string">'relu'</span>)(latent_inputs)</span><br><span class="line">x=layers.Reshape((<span class="number">7</span>, <span class="number">7</span>, <span class="number">64</span>))(x)</span><br><span class="line">x=layers.Conv2DTranspose(<span class="number">64</span>, <span class="number">3</span>, activation=<span class="string">'relu'</span>, strides=<span class="number">2</span>, padding=<span class="string">'same'</span>)(x)</span><br><span class="line">x=layers.Conv2DTranspose(<span class="number">32</span>, <span class="number">3</span>, activation=<span class="string">'relu'</span>, strides=<span class="number">2</span>, padding=<span class="string">'same'</span>)(x)</span><br><span class="line">decoder_outputs=layers.Conv2DTranspose(<span class="number">1</span>, <span class="number">3</span>, activation=<span class="string">'sigmoid'</span>, padding=<span class="string">'same'</span>)(x)</span><br><span class="line">decoder=keras.Model(latent_inputs, decoder_outputs, name=<span class="string">'decoder'</span>)</span><br><span class="line">decoder.summary()</span><br></pre></td></tr></table></figure>
 
-      
+<p><img src="https://tvax3.sinaimg.cn/large/006dgyGJgy1gmoeyy4q45j30hn0b0t90.jpg" alt="捕获"></p>
+<p>Well, the objective function is relative complex:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">reconstruction_loss=tf.reduce_mean(</span><br><span class="line">                tf.reduce_sum(</span><br><span class="line">                    keras.losses. binary_crossentropy(data, reconstruction), axis=(<span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line">                )</span><br><span class="line">            )</span><br><span class="line">kl_loss=<span class="number">-0.5</span>*(<span class="number">1</span>+z_log_var-tf.square(z_mean)-tf.exp(z_log_var))</span><br><span class="line">kl_loss=tf.reduce_mean(tf.reduce_sum(kl_loss, axis=<span class="number">1</span>))</span><br><span class="line">total_loss=reconstruction_loss+kl_loss</span><br></pre></td></tr></table></figure>
 
-      <!-- 归档列表 -->
+<p>The total loss is composed of two parts: the reconstruction loss and KL divergence. You can simply treat KL divergence as a regularizer, like  weight decay,  if you are not interested in variational Bayes.</p>
+<h2 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h2><p>A well trained decoder would generate good looking hand-written digits, like this:</p>
+<p><img src="https://tva2.sinaimg.cn/large/006dgyGJgy1gmof6xrhzgj30w80vvnk1.jpg" alt="manifold"></p>
+<p>we can also see the how the data is compressed in the latent space:</p>
+<p><img src="https://tva4.sinaimg.cn/large/006dgyGJgy1gmof957nnhj30nq0l9gt6.jpg" alt="捕获"></p>
+<h2 id="Next"><a href="#Next" class="headerlink" title="Next"></a>Next</h2><p>The main task for the next week is to generate some good speech commands. I would use a WGAN with weights clipping and ID ConvNets. In the  meantime, I should continue learning of sklearn and measure theory, along with traditional machine learning algorithms.</p>
 
-      
-      <div class="one-tag-list">
-        <span class="fa fa-calendar-times-o listing-seperator" id="2021">
-          <span class="tag-text">2021</span>
-        </span>
-        <ul>
+
+        <hr>
+        <!-- Pager -->
+        <ul class="pager">
           
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            01-07
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/01/07/Weekly-Log/" style="color: #0085a1">
-              <span>
-                Weekly Log
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
           
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            01-05
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/01/05/How-to-evaluate-a-GAN/" style="color: #0085a1">
-              <span>
-                How to evaluate a GAN
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          <li class="next">
+            <a href="/2021/01/07/Weekly-Log/" data-toggle="tooltip" data-placement="top" title="Weekly Log">Next Post &rarr;</a>
           </li>
           
         </ul>
-      </div>
-      
-      <div class="one-tag-list">
-        <span class="fa fa-calendar-times-o listing-seperator" id="2020">
-          <span class="tag-text">2020</span>
-        </span>
-        <ul>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            12-29
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2020/12/29/Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN/" style="color: #0085a1">
-              <span>
-                Failed Training and Mode Collapse of a Vanilla GAN
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            12-23
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2020/12/23/2020-12-21-2020-12-25/" style="color: #0085a1">
-              <span>
-                Changtao's weekly log (12/25)
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-        </ul>
-      </div>
-      
 
+        
+        <!-- tip start -->
+        <div class="tip">
+          <p>
+            If you like this blog or find it useful for you, you are also welcome to share this blog, so that more people can participate in it. If the images used in the blog infringe your copyright, please contact the author to delete them. Thank you !
+          </p>
+        </div>
+        <!-- tip end -->
+        
 
-    </div>
-  </div>
+        
+        <!-- Sharing Srtart -->
+        <!-- Social Social Share Post -->
+<!-- Docs:https://github.com/overtrue/share.js -->
+
+<div class="social-share" data-initialized="true" data-disabled="tencent ,douban ,qzone ,linkedin ,facebook ,google ,diandian" data-wechat-qrcode-helper="" align="center">
+  <ul class="list-inline text-center social-share-ul">
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-twitter">
+        <i class="fa fa-twitter fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a class="social-share-icon icon-wechat">
+        <i class="fa fa-weixin fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-weibo">
+        <i class="fa fa-weibo fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-qq">
+        <i class="fa fa-qq fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon" href="mailto:?subject=Variational Autoencoder&body=Hi,I found this website and thought you might like it http://hnqmz.github.io/2021/01/12/Varitional-Autoencoder/">
+        <i class="fa fa-envelope fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
 </div>
 
+<!-- css & js -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css"> -->
+<script defer="defer" async="true" src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
 
-      <!-- 如果开启评论功能 -->
-      
-    </div>
+        <!-- Sharing End -->
+        
+        <hr>
 
-    <!-- Sidebar Container -->
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
+        <!-- comments start -->
+        <!-- 1. gitalk comment -->
+
+
+
+<!-- 2. gitment comment -->
+
+
+
+<!-- 3. disqus comment -->
+
+
+        <!-- comments end -->
+        <hr>
+
+      </div>
+
+      <!-- Catalog: Tabe of Content -->
+      <!-- Table of Contents -->
+
     
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#As-a-Neural-Network"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">As a Neural Network</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Key-Code"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Key Code</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Result"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Result</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Next"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Next</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+
+      <!-- Sidebar Container -->
+      <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
         <!-- Featured Tags -->
-
-<section>
-  <!-- no hr -->
-  <h5><a href="/tags/">FEATURED TAGS</a></h5>
-  <div class="tags">
-    
-    
-    <a href="/tags/#Generative Model, Deep Learning" title="Generative Model, Deep Learning" rel="1">Generative Model, Deep Learning</a>
-    
-    
-    
-    <a href="/tags/#Coding, Statistics" title="Coding, Statistics" rel="1">Coding, Statistics</a>
-    
-    
-  </div>
-</section>
-
-
-        <hr>
-    
-        <!-- Short About -->
-<section class="visible-md visible-lg">
-  <h5><a href="/about/">ABOUT ME</a></h5>
-  <div class="short-about">
-
-    
-    <img id="avatar_pic" src="/img/avatar/fatpeople.jpg" alt="avatar_pic" style="box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);
-    -moz-box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);
-    -webkit-box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);" />
-    
-
-    
-    <p>This guy knows nothing</p>
-    
-
-    <!-- SNS Link -->
-    <ul class="list-inline">
-      
-
-      
-      <li>
-        <a target="_blank" href="https://github.com/hnqmz">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-    </ul>
-  </div>
-</section>
-
-        <hr>
-    
         
-<!-- <h5>RECENT POSTS</h5> -->
-<h5><a href="/">RECENT POSTS</a></h5>
-<div class="widget">
-  <ul>
-    
-    <a href="../../2021/01/07/Weekly-Log/">
-      <li>Weekly Log</li>
-    </a>
-    
-    <a href="../../2021/01/05/How-to-evaluate-a-GAN/">
-      <li>How to evaluate a GAN</li>
-    </a>
-    
-    <a href="../../2020/12/29/Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN/">
-      <li>Failed Training and Mode Collapse of a Vanilla GAN</li>
-    </a>
-    
-    <a href="../../2020/12/23/2020-12-21-2020-12-25/">
-      <li>Changtao&#39;s weekly log (12/25)</li>
-    </a>
-    
-  </ul>
-</div>
+        <section>
+          <!-- no hr -->
+          <h5>
+            <a href="/tags/">FEATURED TAGS</a>
+          </h5>
+          <div class="tags">
+            
+          </div>
+        </section>
+        
 
-
-        <hr>
-    
         <!-- Friends Blog -->
-
-
-        <hr>
-    
         
-    <!-- <h5>ARCHIVES</h5> -->
-    <h5><a href="/archives/">ARCHIVES</a></h5>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="../../archives/2021/01/">January 2021</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="../../archives/2020/12/">December 2020</a><span class="archive-list-count">2</span></li></ul>
+      </div>
     </div>
-
-
-        <hr>
-    
-        <!-- Categories -->
-
-<!-- <h5>categories</h5> -->
-<h5><a href="/categories/">CATEGORIES</a></h5>
-<div class="widget">
-  <ul>
-    
-    <a href="/categories/#Weekly Log">
-      <li>Weekly Log</li>
-    </a>
-    
-    <a href="/categories/#Deep Learning">
-      <li>Deep Learning</li>
-    </a>
-    
-  </ul>
-</div>
-
-
-        <hr>
-    
-</div>
-
-    
   </div>
-</div>
+</article>
+
+
+
+<!-- anchorjs start -->
+<!-- async load function -->
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script type="text/javascript">
+  // async load function
+  function async (u, c) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) {
+      o.addEventListener('load', function(e) {
+        c(null, e);
+      }, false);
+    }
+    s.parentNode.insertBefore(o, s);
+  };
+</script>
+<script type="text/javascript">
+  //anchor-js, Doc:http://bryanbraun.github.io/anchorjs/
+  async ("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js", function() {
+    anchors.options = {
+      visible: 'hover',
+      placement: 'left',
+      // icon: 'ℬ'
+      icon: '❡'
+    };
+    anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+  });
+</script>
+<style>
+  /* place left on bigger screen */
+  @media all and (min-width: 800px) {
+    .anchorjs-link {
+      position: absolute;
+      left: -0.75em;
+      font-size: 1.1em;
+      margin-top: -0.1em;
+    }
+  }
+</style>
+
+<!-- anchorjs end -->
+
 
 
 	<!-- Footer (contains ThemeColor、viewer) -->
