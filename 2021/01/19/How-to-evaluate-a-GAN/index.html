@@ -47,12 +47,12 @@
 
   <!-- Pygments Highlight CSS -->
   
-<link rel="stylesheet" href="css/highlight.css">
-<link rel="stylesheet" href="css/widget.css">
-<link rel="stylesheet" href="css/rocket.css">
-<link rel="stylesheet" href="css/signature.css">
-<link rel="stylesheet" href="css/catalog.css">
-<link rel="stylesheet" href="css/livemylife.css">
+<link rel="stylesheet" href="../../../../css/highlight.css">
+<link rel="stylesheet" href="../../../../css/widget.css">
+<link rel="stylesheet" href="../../../../css/rocket.css">
+<link rel="stylesheet" href="../../../../css/signature.css">
+<link rel="stylesheet" href="../../../../css/catalog.css">
+<link rel="stylesheet" href="../../../../css/livemylife.css">
 
 
   
@@ -105,10 +105,10 @@
   <!--[if lt IE 9]> <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script> <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script> <![endif]-->
 
   <!-- ga & ba script hoook -->
-  <link rel="canonical" href="http://hnqmz.github.io/404.html">
+  <link rel="canonical" href="http://hnqmz.github.io/2021/01/19/How-to-evaluate-a-GAN/">
   <title>
     
-    This guy knows nothing
+    How to evaluate a GAN - This guy knows nothing
     
   </title>
 <meta name="generator" content="Hexo 4.2.1"></head>
@@ -256,8 +256,8 @@
 
   <style type="text/css">
     header.intro-header {
-       /*page*/
-        background-image: url('/img/header_img/404_bg.jpg');
+       /*post*/
+        background-image: url('');
       
     }
 
@@ -267,6 +267,55 @@
 
 
 
+
+<header class="intro-header">
+  <!-- Signature -->
+  <div id="signature">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+          
+          <div class="post-heading">
+            <div class="tags">
+              
+            </div>
+            <h1>How to evaluate a GAN</h1>
+            <h2 class="subheading"></h2>
+            <span class="meta">
+              Posted by Changtao Li on
+              2021-01-19
+            </span>
+
+
+            
+
+
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- waveoverlay start -->
+  <div class="preview-overlay">
+    <svg class="preview-waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+      <defs>
+        <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z"></path>
+      </defs>
+      <g class="preview-parallax">
+        <use xlink:href="#gentle-wave" x="48" y="0" fill=var(--gentle-wave1)></use>
+        <use xlink:href="#gentle-wave" x="48" y="3" fill=var(--gentle-wave2)></use>
+        <use xlink:href="#gentle-wave" x="48" y="5" fill=var(--gentle-wave3)></use>
+        <use xlink:href="#gentle-wave" x="48" y="7" fill=var(--gentle-wave)></use>
+      </g>
+    </svg>
+  </div>
+  <!-- waveoverlay end -->
+  
+
+</header>
 
 
 
@@ -281,25 +330,251 @@
 	Friends Blog、
 	anchorjs、
 	) -->
-	
-<!-- Page Header -->
-<header class="intro-header" style="background-image: url('/img/header_img/404_bg.jpg')">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
-                <div class="site-heading">
-                    <h1>404</h1>
-                    <!--<hr class="small">-->
-                    <span class="subheading">I&#39;m sorry there is nothing that you want , but you can enjoy the scenery here ...</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+	<!-- Modify by Yu-Hsuan Yen -->
+<!-- Post Content -->
+<article>
+  <div class="container">
+    <div class="row">
+      <!-- Post Container -->
+      <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1 post-container">
 
-<script>
-    document.body.classList.add('page-fullscreen');
+        <p>Evaluating a vanilla GAN, different from evaluating a traditional neural networks that usually have objective functions, is a tricky job. So, how to judge the performance of the generator? There are two ways, either qualitative or quantitively . </p>
+<h2 id="Evaluating-by-People"><a href="#Evaluating-by-People" class="headerlink" title="Evaluating by People"></a>Evaluating by People</h2><p>We use machine learning to mimic the behavior of human being. So, of course, human is always countable when judging the performance of a neural network. The qualitative GAN evaluation methods include:</p>
+<ol>
+<li>Nearest Neighbors</li>
+<li>Rapid Scene Categorization</li>
+<li>Rating and Preference Judgement</li>
+<li>Evaluating Mode Drop and Mode Collapse</li>
+<li>Investigating and Visualizing the Internals of Networks</li>
+</ol>
+<p>The pros of manual evaluation are:</p>
+<ol>
+<li>The most intuitive way</li>
+<li>Easy</li>
+</ol>
+<p>While the cons:</p>
+<ol>
+<li>Too subjective, including biases of the reviewers about the model, its configuration and the project objective</li>
+<li>It requires knowledge of what is real and what is not for the target domain</li>
+<li>It’s limited to the number of products that can be viewed in a reasonable time</li>
+<li>Expensive</li>
+</ol>
+<h2 id="Quantitative-GAN-Evaluation-Method"><a href="#Quantitative-GAN-Evaluation-Method" class="headerlink" title="Quantitative GAN Evaluation Method"></a>Quantitative GAN Evaluation Method</h2><p>This means we have a score, a number to indicate the goodness of the generator, the common ways are:</p>
+<ol>
+<li>Average Log-Likelihood</li>
+<li>Converge Metric</li>
+<li>Inception score(IS)</li>
+<li>Modified Inception Score(m-IS)</li>
+<li>Mode Score</li>
+<li>AM Score</li>
+<li>Frechet Inception Distance(FID)</li>
+<li>Maximum Mean Discrepancy(MMD)</li>
+<li>The Wasserstein Critic</li>
+<li>Birthday Paradox Test</li>
+<li>Classifier Two-sample Tests(C2ST)</li>
+<li>Classification Performance</li>
+<li>Boundary Distortion</li>
+<li>Number of Statistically-Different Bins(NDB)</li>
+<li>Generative Adversarial Metric(GAM)</li>
+<li>Tournament Win Rate and Skill Rating</li>
+<li>Image Retrieval Performance</li>
+<li>Normalized Relative Discriminative Score(NRDS)</li>
+<li>Adversarial Accuracy and Adversarial Divergence</li>
+<li>Geometry Score</li>
+<li>Reconstruction Error</li>
+<li>Image Quality Measures(SSIM, PSNR and Sharpness)</li>
+<li>Low-level Image Statistics</li>
+<li>Precision, Recall and F1 Score</li>
+</ol>
+<p>The most commonly used method are IS and FID</p>
+<h2 id="Inception-Score"><a href="#Inception-Score" class="headerlink" title="Inception Score"></a>Inception Score</h2><p>Inception Model is the state-of-art model used in image classification. Generally speaking, people want the Inception model to have high confidence when classifying generated images, which means the conditional probability should be like an one-hot vector. In the meantime, nobody want to see mode collapse. As a result, the marginal probability should spread all over the label space. So, people use this score to evaluate the performance of the generator:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calculate_inception_score</span><span class="params">(p_yx, eps=<span class="number">1e-16</span>)</span>:</span></span><br><span class="line">    p_y=expand_dims(p_yx.mean(axis=<span class="number">0</span>), axis=<span class="number">0</span>)</span><br><span class="line">    kl_d=p_yx*(log(p_yx+eps)-log(p_y+eps))</span><br><span class="line">    sum_kl_d=kl_d.sum(axis=<span class="number">1</span>)</span><br><span class="line">    avg_kl_d=mean(sum_kl_d)</span><br><span class="line">    is_score=exp(avg_kl_d)</span><br><span class="line">    <span class="keyword">return</span> is_score</span><br></pre></td></tr></table></figure>
+
+<p>For a conditional probability like this:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">p_yx=asarray([[<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">1</span>, <span class="number">0</span>], [<span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>]])</span><br><span class="line">score=calculate_inception_score(p_yx)</span><br><span class="line">print(score)</span><br><span class="line"><span class="string">''' the score is 2.9999999999'''</span></span><br></pre></td></tr></table></figure>
+
+<p>While for a conditional probability like this:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">p_yx=asarray([[<span class="number">0.33</span>, <span class="number">0.33</span>, <span class="number">0.33</span>], [<span class="number">0.33</span>, <span class="number">0.33</span>, <span class="number">0.33</span>], [<span class="number">0.33</span>, <span class="number">0.33</span>, <span class="number">0.33</span>]])</span><br><span class="line">score=calculate_inception_score(p_yx)</span><br><span class="line">print(score)</span><br><span class="line"><span class="string">'''the score is 1.0'''</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Frechet-Inception-Distance"><a href="#Frechet-Inception-Distance" class="headerlink" title="Frechet Inception Distance"></a>Frechet Inception Distance</h2><p>The IS just consider the statistics of generated images, not that of real images. So some researchers put forward this method.</p>
+<p>They assume the distribution of the activation vectors of the final pooling layer of the Inception Model of real and generated images to be 2 Gauss Distribution. If the generated images are of quality, then the Frechet Distance (Wasserstein 2 Distance) between the two distribution should be small.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calculate_fid</span><span class="params">(act1, act2)</span>:</span></span><br><span class="line">    mu1, sigma1=act1.mean(axis=<span class="number">0</span>), np.cov(act1, rowvar=<span class="literal">False</span>)</span><br><span class="line">    mu2, sigma2=act2.mean(axis=<span class="number">0</span>), np.cov(act2, rowvar=<span class="literal">False</span>)</span><br><span class="line">    ssdiff=np.sum((mu1-mu2)**<span class="number">2</span>)</span><br><span class="line">    covmean=sqrtm(sigma1.dot(sigma2))</span><br><span class="line">    <span class="keyword">if</span> np.iscomplexobj(covmean):</span><br><span class="line">        covmean=covmean.real</span><br><span class="line">    fid=ssdiff+np.trace(sigma1+sigma2<span class="number">-2</span>*covmean)</span><br><span class="line">    <span class="keyword">return</span> fid</span><br></pre></td></tr></table></figure>
+
+<p>So, FID should be small if the 2 distribution are close:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">rg=default_rng()</span><br><span class="line">act1=rg.uniform(<span class="number">0</span>, <span class="number">1</span>, (<span class="number">10</span>, <span class="number">2048</span>))</span><br><span class="line">act2=rg.uniform(<span class="number">0</span>, <span class="number">1</span>, (<span class="number">10</span>, <span class="number">2048</span>))</span><br><span class="line">fid=calculate_fid(act1, act1)</span><br><span class="line">print(<span class="string">'FID &#123;&#125;'</span>.format(fid))</span><br><span class="line">fid=calculate_fid(act1, act2)</span><br><span class="line">print(<span class="string">'Another FID &#123;&#125;'</span>.format(fid))</span><br><span class="line"></span><br><span class="line"><span class="string">'''FID -0.00014473650465665622</span></span><br><span class="line"><span class="string">   Another FID 354.8091622109923'''</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Extension"><a href="#Extension" class="headerlink" title="Extension?"></a>Extension?</h2><p>IS and FID are used to judge the quality of the generated images. But the idea behind them can be used when judging the quality of generated sound, etc.</p>
+
+
+        <hr>
+        <!-- Pager -->
+        <ul class="pager">
+          
+          
+          <li class="next">
+            <a href="/2021/01/12/Varitional-Autoencoder/" data-toggle="tooltip" data-placement="top" title="Variational Autoencoder">Next Post &rarr;</a>
+          </li>
+          
+        </ul>
+
+        
+        <!-- tip start -->
+        <div class="tip">
+          <p>
+            If you like this blog or find it useful for you, you are also welcome to share this blog, so that more people can participate in it. If the images used in the blog infringe your copyright, please contact the author to delete them. Thank you !
+          </p>
+        </div>
+        <!-- tip end -->
+        
+
+        
+        <!-- Sharing Srtart -->
+        <!-- Social Social Share Post -->
+<!-- Docs:https://github.com/overtrue/share.js -->
+
+<div class="social-share" data-initialized="true" data-disabled="tencent ,douban ,qzone ,linkedin ,facebook ,google ,diandian" data-wechat-qrcode-helper="" align="center">
+  <ul class="list-inline text-center social-share-ul">
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-twitter">
+        <i class="fa fa-twitter fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a class="social-share-icon icon-wechat">
+        <i class="fa fa-weixin fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-weibo">
+        <i class="fa fa-weibo fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-qq">
+        <i class="fa fa-qq fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon" href="mailto:?subject=How to evaluate a GAN&body=Hi,I found this website and thought you might like it http://hnqmz.github.io/2021/01/19/How-to-evaluate-a-GAN/">
+        <i class="fa fa-envelope fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- css & js -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css"> -->
+<script defer="defer" async="true" src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+        <!-- Sharing End -->
+        
+        <hr>
+
+        <!-- comments start -->
+        <!-- 1. gitalk comment -->
+
+
+
+<!-- 2. gitment comment -->
+
+
+
+<!-- 3. disqus comment -->
+
+
+        <!-- comments end -->
+        <hr>
+
+      </div>
+
+      <!-- Catalog: Tabe of Content -->
+      <!-- Table of Contents -->
+
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Evaluating-by-People"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Evaluating by People</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Quantitative-GAN-Evaluation-Method"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Quantitative GAN Evaluation Method</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Inception-Score"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Inception Score</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Frechet-Inception-Distance"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Frechet Inception Distance</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Extension"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Extension?</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+
+      <!-- Sidebar Container -->
+      <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+        <!-- Featured Tags -->
+        
+        <section>
+          <!-- no hr -->
+          <h5>
+            <a href="/tags/">FEATURED TAGS</a>
+          </h5>
+          <div class="tags">
+            
+          </div>
+        </section>
+        
+
+        <!-- Friends Blog -->
+        
+      </div>
+    </div>
+  </div>
+</article>
+
+
+
+<!-- anchorjs start -->
+<!-- async load function -->
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script type="text/javascript">
+  // async load function
+  function async (u, c) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) {
+      o.addEventListener('load', function(e) {
+        c(null, e);
+      }, false);
+    }
+    s.parentNode.insertBefore(o, s);
+  };
 </script>
+<script type="text/javascript">
+  //anchor-js, Doc:http://bryanbraun.github.io/anchorjs/
+  async ("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js", function() {
+    anchors.options = {
+      visible: 'hover',
+      placement: 'left',
+      // icon: 'ℬ'
+      icon: '❡'
+    };
+    anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+  });
+</script>
+<style>
+  /* place left on bigger screen */
+  @media all and (min-width: 800px) {
+    .anchorjs-link {
+      position: absolute;
+      left: -0.75em;
+      font-size: 1.1em;
+      margin-top: -0.1em;
+    }
+  }
+</style>
+
+<!-- anchorjs end -->
+
 
 
 	<!-- Footer (contains ThemeColor、viewer) -->
