@@ -177,14 +177,14 @@
 
           
           <li>
-            <a href="/about/">About</a>
+            <a href="/archive/">Archives</a>
           </li>
           
           
 
           
           <li>
-            <a href="/archive/">Archives</a>
+            <a href="/about/">About</a>
           </li>
           
           
@@ -326,17 +326,39 @@
       <!-- 标签云 -->
       <div id='tag_cloud' class="tags">
         
-        <a href="#Machine Learning" title="Machine Learning" rel="2">Machine Learning</a>
-        
         <a href="#Deep Learning" title="Deep Learning" rel="1">Deep Learning</a>
         
-        <a href="#Weekly Log" title="Weekly Log" rel="1">Weekly Log</a>
+        <a href="#Machine Learning" title="Machine Learning" rel="2">Machine Learning</a>
         
         <a href="#Generative Model" title="Generative Model" rel="1">Generative Model</a>
+        
+        <a href="#Weekly Log" title="Weekly Log" rel="1">Weekly Log</a>
         
       </div>
 
       <!-- 标签列表 -->
+      
+      <div class="one-tag-list">
+        <span class="fa fa-tag listing-seperator" id="Deep Learning">
+          <span class="tag-text">Deep Learning</span>
+        </span>
+        
+        <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+        <div class="post-preview">
+          <a href="/2021/01/19/How-to-evaluate-a-GAN/">
+            <h2 class="post-title">
+              How to evaluate a GAN
+            </h2>
+            
+          </a>
+          <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+        </div>
+        <hr>
+        
+      </div>
       
       <div class="one-tag-list">
         <span class="fa fa-tag listing-seperator" id="Machine Learning">
@@ -376,8 +398,8 @@
       </div>
       
       <div class="one-tag-list">
-        <span class="fa fa-tag listing-seperator" id="Deep Learning">
-          <span class="tag-text">Deep Learning</span>
+        <span class="fa fa-tag listing-seperator" id="Generative Model">
+          <span class="tag-text">Generative Model</span>
         </span>
         
         <!-- <li class="listing-item">
@@ -385,10 +407,14 @@
                   <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
                   </li> -->
         <div class="post-preview">
-          <a href="/2021/01/19/How-to-evaluate-a-GAN/">
+          <a href="/2021/01/12/Varitional-Autoencoder/">
             <h2 class="post-title">
-              How to evaluate a GAN
+              Variational Autoencoder
             </h2>
+            
+            <h3 class="post-subtitle">
+              Another Generative Model
+            </h3>
             
           </a>
           <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
@@ -414,32 +440,6 @@
             
             <h3 class="post-subtitle">
               2020/1/7
-            </h3>
-            
-          </a>
-          <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-        </div>
-        <hr>
-        
-      </div>
-      
-      <div class="one-tag-list">
-        <span class="fa fa-tag listing-seperator" id="Generative Model">
-          <span class="tag-text">Generative Model</span>
-        </span>
-        
-        <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-        <div class="post-preview">
-          <a href="/2021/01/12/Varitional-Autoencoder/">
-            <h2 class="post-title">
-              Variational Autoencoder
-            </h2>
-            
-            <h3 class="post-subtitle">
-              Another Generative Model
             </h3>
             
           </a>

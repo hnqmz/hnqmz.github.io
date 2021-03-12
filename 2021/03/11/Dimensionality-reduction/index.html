@@ -177,14 +177,14 @@
 
           
           <li>
-            <a href="/about/">About</a>
+            <a href="/archive/">Archives</a>
           </li>
           
           
 
           
           <li>
-            <a href="/archive/">Archives</a>
+            <a href="/about/">About</a>
           </li>
           
           
@@ -338,7 +338,9 @@
       <!-- Post Container -->
       <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1 post-container">
 
-        <h2 id="Why-Dimensionality-Reduction"><a href="#Why-Dimensionality-Reduction" class="headerlink" title="Why Dimensionality Reduction?"></a>Why Dimensionality Reduction?</h2><p>In machine learning, we usually write all our data into a matrix: design matrix:<br>$$<br>M  \in \mathbb{R}^{N \times D}<br>$$<br>N is the number of samples while D is the number of features of each sample. In general, we wish N to be larger than D. However, in some circumstances, we do encounter design matrixes which D is larger. Under such situations, some machine learning algorithms will not work, while some will cost much more time. To address this problem, some researchers put forward some methods to reduce the dimension of the data. This is why we need dimensionality reduction.</p>
+        <h2 id="Why-Dimensionality-Reduction"><a href="#Why-Dimensionality-Reduction" class="headerlink" title="Why Dimensionality Reduction?"></a>Why Dimensionality Reduction?</h2><p>In machine learning, we usually write all our data into a matrix: design matrix:</p>
+<p><img src="http://tvax4.sinaimg.cn/large/006dgyGJgy1gogy7owe8pj304e01vq2p.jpg" alt="1"></p>
+<p>N is the number of samples while D is the number of features of each sample. In general, we wish N to be larger than D. However, in some circumstances, we do encounter design matrixes which D is larger. Under such situations, some machine learning algorithms will not work, while some will cost much more time. To address this problem, some researchers put forward some methods to reduce the dimension of the data. This is why we need dimensionality reduction.</p>
 <h2 id="Raising-the-Dimension-of-Your-Data"><a href="#Raising-the-Dimension-of-Your-Data" class="headerlink" title="Raising the Dimension of Your Data"></a>Raising the Dimension of Your Data</h2><p>However, before talking about dimensionality reduction, it’s more necessary, in my opinion, to talk about raising the dimension of your data. Raising the dimension is commonly seen in linear regression and kernel methods. So, let’s talk about them.</p>
 <h3 id="Linear-Regression"><a href="#Linear-Regression" class="headerlink" title="Linear Regression"></a>Linear Regression</h3><p>Linear regression is the work horse of machine learning. However, it’s not possible to explain it explicitly in one passage. We’ll just talk a little about it here. That is, how to get the model of this data:</p>
 <p>​                                                               <img src="http://tva3.sinaimg.cn/large/006dgyGJgy1gogulyusb3j30h50azjrw.jpg" alt="1"></p>
