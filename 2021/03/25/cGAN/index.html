@@ -47,12 +47,12 @@
 
   <!-- Pygments Highlight CSS -->
   
-<link rel="stylesheet" href="../css/highlight.css">
-<link rel="stylesheet" href="../css/widget.css">
-<link rel="stylesheet" href="../css/rocket.css">
-<link rel="stylesheet" href="../css/signature.css">
-<link rel="stylesheet" href="../css/catalog.css">
-<link rel="stylesheet" href="../css/livemylife.css">
+<link rel="stylesheet" href="../../../../css/highlight.css">
+<link rel="stylesheet" href="../../../../css/widget.css">
+<link rel="stylesheet" href="../../../../css/rocket.css">
+<link rel="stylesheet" href="../../../../css/signature.css">
+<link rel="stylesheet" href="../../../../css/catalog.css">
+<link rel="stylesheet" href="../../../../css/livemylife.css">
 
 
   
@@ -105,10 +105,10 @@
   <!--[if lt IE 9]> <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script> <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script> <![endif]-->
 
   <!-- ga & ba script hoook -->
-  <link rel="canonical" href="http://hnqmz.github.io/tags/">
+  <link rel="canonical" href="http://hnqmz.github.io/2021/03/25/cGAN/">
   <title>
     
-    Tags - This guy knows nothing
+    Generate the Specific Data You Want - This guy knows nothing
     
   </title>
 <meta name="generator" content="Hexo 4.2.1"></head>
@@ -256,8 +256,8 @@
 
   <style type="text/css">
     header.intro-header {
-       /*page*/
-        background-image: url('/img/header_img/tag_bg.jpg');
+       /*post*/
+        background-image: url('');
       
     }
 
@@ -275,10 +275,21 @@
       <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
           
-          <div class="site-heading">
-            <h1>Tags</h1>
-            <!--<hr class="small">-->
-            <span class="subheading">I don’t know where I am going, but I am on my way......</span>
+          <div class="post-heading">
+            <div class="tags">
+              
+            </div>
+            <h1>Generate the Specific Data You Want</h1>
+            <h2 class="subheading"></h2>
+            <span class="meta">
+              Posted by Changtao Li on
+              2021-03-25
+            </span>
+
+
+            
+
+
           </div>
           
         </div>
@@ -319,69 +330,208 @@
 	Friends Blog、
 	anchorjs、
 	) -->
-	<!-- Main Content -->
-<div class="container">
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-      <!-- 标签云 -->
-      <div id='tag_cloud' class="tags">
+	<!-- Modify by Yu-Hsuan Yen -->
+<!-- Post Content -->
+<article>
+  <div class="container">
+    <div class="row">
+      <!-- Post Container -->
+      <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1 post-container">
+
+        <h2 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h2><p>GAN can learn the distribution of a dataset and sample from the distribution. For example, if you train a GAN on pictures of handwritten digits(0, 1, …, 9), then your generator will produce handwritten digits. That is, given a latent vector, the generator will yield a picture of a handwritten digits, but you will never know what digit is on that picture unless you spend a very long time figuring out the function of each weight of the generator. So, here is the problem: how to generate only 8 using this generator?</p>
+<h3 id="Multi-task-Learning"><a href="#Multi-task-Learning" class="headerlink" title="Multi-task Learning"></a>Multi-task Learning</h3><p>Some clever people will say, you can train a GAN just on pictures of 8. Then, you generator is ignorant about the distribution of other numbers. As a result, it cannot produce other pictures but 8! </p>
+<p>Brilliant idea!  But if you reconsider this method, you’ll find it Penny wise and pound-foolish! Data is expensive, and you desert 90% of this dataset just to create a generator only capable of producing 8. </p>
+<p>A more reasonable explanation is this: pictures of different digits share a lot in common, like the tiny structures. If you desert these data, then it’s unlikely for you to learn the common representation of digit pictures thus impairing the quality of your pictures. Actually, this is called multi-learning. You can search for Hierarchy Bayes Model to learn more about it.</p>
+<h2 id="Just-a-cGAN"><a href="#Just-a-cGAN" class="headerlink" title="Just a cGAN!"></a>Just a cGAN!</h2><p>A better way is cGAN, you just add a control vector to both the discriminator and generator. After training a GAN well, you can use this control vector to generate the specific data you want. So, how to transform a vanilla DCGAN into a cGAN?</p>
+<h3 id="Discriminator"><a href="#Discriminator" class="headerlink" title="Discriminator"></a>Discriminator</h3><p>Comparing with DCGAN’s discriminator, we need an extra input so that the information about the label can get into the neural network. Here is the code for constructing such a discriminator:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">define_discriminator</span><span class="params">(in_shape=<span class="params">(<span class="number">28</span>, <span class="number">28</span>, <span class="number">1</span>)</span>, n_classes=<span class="number">10</span>)</span>:</span></span><br><span class="line">    in_label=layers.Input(shape=(<span class="number">1</span>,))</span><br><span class="line">    li=layers.Embedding(n_classes, <span class="number">50</span>)(in_label)</span><br><span class="line">    n_nodes=in_shape[<span class="number">0</span>]*in_shape[<span class="number">1</span>]</span><br><span class="line">    li=layers.Dense(n_nodes)(li)</span><br><span class="line">    li=layers.Reshape((in_shape[<span class="number">0</span>], in_shape[<span class="number">1</span>], <span class="number">-1</span>))(li)</span><br><span class="line">    in_image=layers.Input(shape=in_shape)</span><br><span class="line">    merge=layers.Concatenate()([li, in_image])</span><br><span class="line">    fe=layers.Conv2D(<span class="number">128</span>, (<span class="number">3</span>, <span class="number">3</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>)(merge)</span><br><span class="line">    fe=layers.LeakyReLU(alpha=<span class="number">0.2</span>)(fe)</span><br><span class="line">    fe=layers.Conv2D(<span class="number">128</span>, (<span class="number">3</span>, <span class="number">3</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>)(merge)</span><br><span class="line">    fe=layers.LeakyReLU(alpha=<span class="number">0.2</span>)(fe)</span><br><span class="line">    fe=layers.Flatten()(fe)</span><br><span class="line">    fe=layers.Dropout(<span class="number">0.4</span>)(fe)</span><br><span class="line">    output=layers.Dense(<span class="number">1</span>, activation=<span class="string">'sigmoid'</span>)(fe)</span><br><span class="line">    model=tf.keras.Model(inputs=(in_label, in_image), outputs=(output))</span><br><span class="line">    model.compile(loss=<span class="string">'binary_crossentropy'</span>, optimizer=tf.keras.optimizers.Adam(lr=<span class="number">0.0002</span>, beta_1=<span class="number">0.5</span>), metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line">    <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+
+<p> And this is a graph of this model to help you better understand its topological structure:</p>
+<p><img src="http://tvax1.sinaimg.cn/large/006dgyGJgy1gox1bfrdvwj30bh0q0q3d.jpg" alt="d_model"></p>
+<h3 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h3><p>Similarly, the generator also should be modified by adding another input, the code goes as follow:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">define_generator</span><span class="params">(latent_dim, n_classes=<span class="number">10</span>)</span>:</span></span><br><span class="line">    in_label=layers.Input(shape=(<span class="number">1</span>, ))</span><br><span class="line">    li=layers.Embedding(n_classes, <span class="number">50</span>)(in_label)</span><br><span class="line">    n_nodes=<span class="number">7</span>*<span class="number">7</span></span><br><span class="line">    li=layers.Dense(n_nodes)(li)</span><br><span class="line">    li=layers.Reshape((<span class="number">7</span>, <span class="number">7</span>, <span class="number">1</span>))(li)</span><br><span class="line"></span><br><span class="line">    in_lat=layers.Input(shape=(latent_dim, ))</span><br><span class="line">    n_nodes=<span class="number">128</span>*<span class="number">7</span>*<span class="number">7</span></span><br><span class="line">    gen=layers.Dense(n_nodes)(in_lat)</span><br><span class="line">    gen=layers.LeakyReLU(alpha=<span class="number">0.2</span>)(gen)</span><br><span class="line">    gen=layers.Reshape((<span class="number">7</span>, <span class="number">7</span>, <span class="number">128</span>))(gen)</span><br><span class="line"></span><br><span class="line">    merge=layers.Concatenate()([gen, li])</span><br><span class="line"></span><br><span class="line">    gen=layers.Conv2DTranspose(<span class="number">128</span>, (<span class="number">4</span>, <span class="number">4</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>)(merge)</span><br><span class="line">    gen=layers.LeakyReLU(alpha=<span class="number">0.2</span>)(gen)</span><br><span class="line"></span><br><span class="line">    gen=layers.Conv2DTranspose(<span class="number">128</span>, (<span class="number">4</span>, <span class="number">4</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>)(gen)</span><br><span class="line">    gen=layers.LeakyReLU(alpha=<span class="number">0.2</span>)(gen)</span><br><span class="line"></span><br><span class="line">    gen=layers.Conv2D(<span class="number">1</span>, (<span class="number">7</span>, <span class="number">7</span>), activation=<span class="string">'tanh'</span>, padding=<span class="string">'same'</span>)(gen)</span><br><span class="line"></span><br><span class="line">    model=tf.keras.Model(inputs=(in_label, in_lat), outputs=(gen))</span><br><span class="line">    <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+
+<p>And this is a graph to help you better understand this structure:</p>
+<p><img src="http://tva1.sinaimg.cn/large/006dgyGJgy1gox1cmdqj7j30bp0q0aar.jpg" alt="g_model"></p>
+<h3 id="Training-Result"><a href="#Training-Result" class="headerlink" title="Training Result"></a>Training Result</h3><p>To train a cGAN is really easy, we just need provide extra information about labels. I have trained a cGAN on fashion MNIST dataset for 40 epochs and here is the result:</p>
+<p>​                                                                                <img src="http://tvax1.sinaimg.cn/large/006dgyGJgy1gox1hycm99j30ck08l768.jpg" alt="11"></p>
+<p>Aha, now we can ask the generator to produce the specific data we need.</p>
+<h3 id="WcGAN"><a href="#WcGAN" class="headerlink" title="WcGAN?"></a>WcGAN?</h3><p>What if I want to use Earth Mover distance instead of the binary entropy as my discriminator’s objective function? That’s easy, as we know, we just need little modification:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClipConstraint</span><span class="params">(tf.keras.constraints.Constraint)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, clip_value)</span>:</span></span><br><span class="line">        self.clip_value=clip_value</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, weights)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> tf.clip_by_value(weights, -self.clip_value, self.clip_value)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_config</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="string">'clip_value'</span>: self.clip_value&#125;</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wasserstein_loss</span><span class="params">(y_true, y_pred)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> tf.reduce_mean(y_true*y_pred, axis=<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">define_critic</span><span class="params">(in_shape=<span class="params">(<span class="number">28</span>, <span class="number">28</span>, <span class="number">1</span>)</span>, n_classes=<span class="number">10</span>)</span>:</span></span><br><span class="line">    const=ClipConstraint(<span class="number">0.01</span>)</span><br><span class="line">    in_label=layers.Input(shape=(<span class="number">1</span>,))</span><br><span class="line">    li=layers.Embedding(n_classes, <span class="number">50</span>)(in_label)</span><br><span class="line">    n_nodes=in_shape[<span class="number">0</span>]*in_shape[<span class="number">1</span>]</span><br><span class="line">    li=layers.Dense(n_nodes, kernel_constraint=const)(li)</span><br><span class="line">    li=layers.Reshape((in_shape[<span class="number">0</span>], in_shape[<span class="number">1</span>], <span class="number">-1</span>))(li)</span><br><span class="line">    in_image=layers.Input(shape=in_shape)</span><br><span class="line">    merge=layers.Concatenate()([li, in_image])</span><br><span class="line">    fe=layers.Conv2D(<span class="number">128</span>, (<span class="number">3</span>, <span class="number">3</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>, kernel_constraint=const)(merge)</span><br><span class="line">    fe=layers.LeakyReLU(alpha=<span class="number">0.2</span>)(fe)</span><br><span class="line">    fe=layers.Conv2D(<span class="number">128</span>, (<span class="number">3</span>, <span class="number">3</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>, kernel_constraint=const)(merge)</span><br><span class="line">    fe=layers.LeakyReLU(alpha=<span class="number">0.2</span>)(fe)</span><br><span class="line">    fe=layers.Flatten()(fe)</span><br><span class="line">    fe=layers.Dropout(<span class="number">0.4</span>)(fe)</span><br><span class="line">    output=layers.Dense(<span class="number">1</span>)(fe)</span><br><span class="line">    model=tf.keras.Model(inputs=(in_label, in_image), outputs=(output))</span><br><span class="line">    model.compile(loss=wasserstein_loss, optimizer=tf.keras.optimizers.RMSprop(lr=<span class="number">0.00005</span>), metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line">    <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+
+<p>Remark: The Embedding layer here are not clipped and this is because the embedding layer is part of feature representation, not the function used to approximate the earth mover distance.</p>
+<h2 id="What’s-Next"><a href="#What’s-Next" class="headerlink" title="What’s Next"></a>What’s Next</h2><p>There are many ways to control the output of your generator, like InfoGAN which can control the tiny structure of your output. So, nest time, I will give an example about it.</p>
+
+
+        <hr>
+        <!-- Pager -->
+        <ul class="pager">
+          
+          
+          <li class="next">
+            <a href="/2021/03/19/To-Learn-the-Distribution-of-Data/" data-toggle="tooltip" data-placement="top" title="To Learn the Distribution of the Data">Next Post &rarr;</a>
+          </li>
+          
+        </ul>
+
         
-        <a href="#Generative Model, Deep Learning" title="Generative Model, Deep Learning" rel="1">Generative Model, Deep Learning</a>
+        <!-- tip start -->
+        <div class="tip">
+          <p>
+            If you like this blog or find it useful for you, you are also welcome to share this blog, so that more people can participate in it. If the images used in the blog infringe your copyright, please contact the author to delete them. Thank you !
+          </p>
+        </div>
+        <!-- tip end -->
         
-        <a href="#Coding, Statistics" title="Coding, Statistics" rel="1">Coding, Statistics</a>
+
         
+        <!-- Sharing Srtart -->
+        <!-- Social Social Share Post -->
+<!-- Docs:https://github.com/overtrue/share.js -->
+
+<div class="social-share" data-initialized="true" data-disabled="tencent ,douban ,qzone ,linkedin ,facebook ,google ,diandian" data-wechat-qrcode-helper="" align="center">
+  <ul class="list-inline text-center social-share-ul">
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-twitter">
+        <i class="fa fa-twitter fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a class="social-share-icon icon-wechat">
+        <i class="fa fa-weixin fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-weibo">
+        <i class="fa fa-weibo fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-qq">
+        <i class="fa fa-qq fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon" href="mailto:?subject=Generate the Specific Data You Want&body=Hi,I found this website and thought you might like it http://hnqmz.github.io/2021/03/25/cGAN/">
+        <i class="fa fa-envelope fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- css & js -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css"> -->
+<script defer="defer" async="true" src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
+
+        <!-- Sharing End -->
+        
+        <hr>
+
+        <!-- comments start -->
+        <!-- 1. gitalk comment -->
+
+
+
+<!-- 2. gitment comment -->
+
+
+
+<!-- 3. disqus comment -->
+
+
+        <!-- comments end -->
+        <hr>
+
       </div>
 
-      <!-- 标签列表 -->
-      
-      <div class="one-tag-list">
-        <span class="fa fa-tag listing-seperator" id="Generative Model, Deep Learning">
-          <span class="tag-text">Generative Model, Deep Learning</span>
-        </span>
-        
-        <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-        <div class="post-preview">
-          <a href="/2020/12/29/Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN/">
-            <h2 class="post-title">
-              Failed Training and Mode Collapse of a Vanilla GAN
-            </h2>
-            
-          </a>
-          <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-        </div>
-        <hr>
-        
-      </div>
-      
-      <div class="one-tag-list">
-        <span class="fa fa-tag listing-seperator" id="Coding, Statistics">
-          <span class="tag-text">Coding, Statistics</span>
-        </span>
-        
-        <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-        <div class="post-preview">
-          <a href="/2020/12/23/2020-12-21-2020-12-25/">
-            <h2 class="post-title">
-              Changtao's weekly log (12/25)
-            </h2>
-            
-          </a>
-          <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-        </div>
-        <hr>
-        
-      </div>
-      
+      <!-- Catalog: Tabe of Content -->
+      <!-- Table of Contents -->
 
+    
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Background"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Background</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Multi-task-Learning"><span class="toc-nav-number">1.1.</span> <span class="toc-nav-text">Multi-task Learning</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Just-a-cGAN"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Just a cGAN!</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Discriminator"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">Discriminator</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Generator"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">Generator</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#Training-Result"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">Training Result</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#WcGAN"><span class="toc-nav-number">2.4.</span> <span class="toc-nav-text">WcGAN?</span></a></li></ol></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#What’s-Next"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">What’s Next</span></a></li></ol>
+        
+        </div>
+      </aside>
+    
+
+
+      <!-- Sidebar Container -->
+      <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+        <!-- Featured Tags -->
+        
+        <section>
+          <!-- no hr -->
+          <h5>
+            <a href="/tags/">FEATURED TAGS</a>
+          </h5>
+          <div class="tags">
+            
+          </div>
+        </section>
+        
+
+        <!-- Friends Blog -->
+        
+      </div>
     </div>
   </div>
-</div>
+</article>
+
+
+
+<!-- anchorjs start -->
+<!-- async load function -->
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script type="text/javascript">
+  // async load function
+  function async (u, c) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) {
+      o.addEventListener('load', function(e) {
+        c(null, e);
+      }, false);
+    }
+    s.parentNode.insertBefore(o, s);
+  };
+</script>
+<script type="text/javascript">
+  //anchor-js, Doc:http://bryanbraun.github.io/anchorjs/
+  async ("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js", function() {
+    anchors.options = {
+      visible: 'hover',
+      placement: 'left',
+      // icon: 'ℬ'
+      icon: '❡'
+    };
+    anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+  });
+</script>
+<style>
+  /* place left on bigger screen */
+  @media all and (min-width: 800px) {
+    .anchorjs-link {
+      position: absolute;
+      left: -0.75em;
+      font-size: 1.1em;
+      margin-top: -0.1em;
+    }
+  }
+</style>
+
+<!-- anchorjs end -->
+
 
 
 	<!-- Footer (contains ThemeColor、viewer) -->

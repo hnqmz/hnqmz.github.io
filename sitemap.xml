@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://hnqmz.github.io/2021/03/25/cGAN/</loc>
+    
+    <lastmod>2021-03-26</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://hnqmz.github.io/2021/03/19/To-Learn-the-Distribution-of-Data/</loc>
     
     <lastmod>2021-03-19</lastmod>
@@ -95,22 +102,22 @@
 
   <url>
     <loc>http://hnqmz.github.io/</loc>
-    <lastmod>2021-03-19</lastmod>
+    <lastmod>2021-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   
   <url>
-    <loc>http://hnqmz.github.io/tags/Coding-Statistics/</loc>
-    <lastmod>2021-03-19</lastmod>
+    <loc>http://hnqmz.github.io/tags/Generative-Model-Deep-Learning/</loc>
+    <lastmod>2021-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://hnqmz.github.io/tags/Generative-Model-Deep-Learning/</loc>
-    <lastmod>2021-03-19</lastmod>
+    <loc>http://hnqmz.github.io/tags/Coding-Statistics/</loc>
+    <lastmod>2021-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -119,28 +126,28 @@
   
   <url>
     <loc>http://hnqmz.github.io/categories/Machine-Learning/</loc>
-    <lastmod>2021-03-19</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://hnqmz.github.io/categories/Generative-Model/</loc>
-    <lastmod>2021-03-19</lastmod>
+    <lastmod>2021-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://hnqmz.github.io/categories/Deep-Learning/</loc>
-    <lastmod>2021-03-19</lastmod>
+    <lastmod>2021-03-26</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://hnqmz.github.io/categories/Generative-Model/</loc>
+    <lastmod>2021-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://hnqmz.github.io/categories/Weekly-Log/</loc>
-    <lastmod>2021-03-19</lastmod>
+    <lastmod>2021-03-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
