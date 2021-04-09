@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://hnqmz.github.io/2021/04/08/InfoGAN/</loc>
+    
+    <lastmod>2021-04-09</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://hnqmz.github.io/2021/04/01/WGAN+GP/</loc>
     
     <lastmod>2021-04-01</lastmod>
@@ -109,7 +116,7 @@
 
   <url>
     <loc>http://hnqmz.github.io/</loc>
-    <lastmod>2021-04-01</lastmod>
+    <lastmod>2021-04-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -117,14 +124,14 @@
   
   <url>
     <loc>http://hnqmz.github.io/tags/Generative-Model-Deep-Learning/</loc>
-    <lastmod>2021-04-01</lastmod>
+    <lastmod>2021-04-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://hnqmz.github.io/tags/Coding-Statistics/</loc>
-    <lastmod>2021-04-01</lastmod>
+    <lastmod>2021-04-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -133,28 +140,28 @@
   
   <url>
     <loc>http://hnqmz.github.io/categories/Machine-Learning/</loc>
-    <lastmod>2021-04-01</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://hnqmz.github.io/categories/Deep-Learning/</loc>
-    <lastmod>2021-04-01</lastmod>
+    <lastmod>2021-04-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://hnqmz.github.io/categories/Generative-Model/</loc>
-    <lastmod>2021-04-01</lastmod>
+    <lastmod>2021-04-09</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://hnqmz.github.io/categories/Deep-Learning/</loc>
+    <lastmod>2021-04-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://hnqmz.github.io/categories/Weekly-Log/</loc>
-    <lastmod>2021-04-01</lastmod>
+    <lastmod>2021-04-09</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
