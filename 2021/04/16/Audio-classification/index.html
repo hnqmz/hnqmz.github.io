@@ -47,12 +47,12 @@
 
   <!-- Pygments Highlight CSS -->
   
-<link rel="stylesheet" href="../../../css/highlight.css">
-<link rel="stylesheet" href="../../../css/widget.css">
-<link rel="stylesheet" href="../../../css/rocket.css">
-<link rel="stylesheet" href="../../../css/signature.css">
-<link rel="stylesheet" href="../../../css/catalog.css">
-<link rel="stylesheet" href="../../../css/livemylife.css">
+<link rel="stylesheet" href="../../../../css/highlight.css">
+<link rel="stylesheet" href="../../../../css/widget.css">
+<link rel="stylesheet" href="../../../../css/rocket.css">
+<link rel="stylesheet" href="../../../../css/signature.css">
+<link rel="stylesheet" href="../../../../css/catalog.css">
+<link rel="stylesheet" href="../../../../css/livemylife.css">
 
 
   
@@ -105,10 +105,10 @@
   <!--[if lt IE 9]> <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script> <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script> <![endif]-->
 
   <!-- ga & ba script hoook -->
-  <link rel="canonical" href="http://hnqmz.github.io/archives/2021/04/">
+  <link rel="canonical" href="http://hnqmz.github.io/2021/04/16/Audio-classification/">
   <title>
     
-    This guy knows nothing
+    An Audio Classification Project - This guy knows nothing
     
   </title>
 <meta name="generator" content="Hexo 4.2.1"></head>
@@ -256,8 +256,8 @@
 
   <style type="text/css">
     header.intro-header {
-       /*page*/
-        background-image: url('/img/header_img/archive_bg2.jpg');
+       /*post*/
+        background-image: url('');
       
     }
 
@@ -275,10 +275,21 @@
       <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
           
-          <div class="site-heading">
-            <h1>Changtao&#39;s Blog</h1>
-            <!--<hr class="small">-->
-            <span class="subheading">A place to write down my thoughts</span>
+          <div class="post-heading">
+            <div class="tags">
+              
+            </div>
+            <h1>An Audio Classification Project</h1>
+            <h2 class="subheading"></h2>
+            <span class="meta">
+              Posted by Changtao Li on
+              2021-04-16
+            </span>
+
+
+            
+
+
           </div>
           
         </div>
@@ -319,401 +330,212 @@
 	Friends Blog、
 	anchorjs、
 	) -->
-	<!-- Main Content -->
-<div class="container">
-  <div class="row">
-    
+	<!-- Modify by Yu-Hsuan Yen -->
+<!-- Post Content -->
+<article>
+  <div class="container">
+    <div class="row">
+      <!-- Post Container -->
+      <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1 post-container">
 
-    <!-- USE SIDEBAR -->
-    <!-- Post Container -->
-    <div class="
-                col-lg-8 col-lg-offset-1
-                col-md-8 col-md-offset-1
-                col-sm-12
-                col-xs-12
-                post-container
-            ">
+        <h2 id="Image-Vs-Audio"><a href="#Image-Vs-Audio" class="headerlink" title="Image Vs Audio"></a>Image Vs Audio</h2><p>So far, I have done a lot about image classification and generation. This week, I finally come to the field of audio classification. Comparing with image classification, audio classification is a little harder. The reason is that audio are sparser than image. What’s more, we must capture a longer dependency when deal with audios. All these things make it hard to classify audios. Therefore, we cannot directly use the Convnet, which is excellent for dealing with images to audio classification. To perform classification on audios, we need do feature extraction first.</p>
+<p>Here are some pictures to illustrate the importance of feature extraction:</p>
+<p><img src="http://tva2.sinaimg.cn/large/006dgyGJgy1gplbegflawj30im0dgweq.jpg" alt="1"></p>
+<p><img src="http://tvax4.sinaimg.cn/large/006dgyGJgy1gplbf6wqcsj30j00f1aam.jpg" alt="1"></p>
+<p><img src="http://tvax2.sinaimg.cn/large/006dgyGJgy1gplbftp3evj30jg0dygm2.jpg" alt="1"></p>
+<p>The shape of original waveform is (16000, ), the shape of stft is (1025, 32) and the shape of mfcc is (20, 32). So we can see, feature extraction is also dimensional reduction. By the way, doing feature extraction is really easy with the help of some open source python library, here is the code:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> librosa, librosa.display</span><br><span class="line">stft=librosa.stft(x_tr_s[<span class="number">0</span>, :, <span class="number">0</span>])</span><br><span class="line">mfcc=librosa.feature.mfcc(x_tr_s[<span class="number">0</span>, :, <span class="number">0</span>])</span><br><span class="line"><span class="comment"># you can also do the same by using scipy!</span></span><br></pre></td></tr></table></figure>
 
-      
-<!-- Main Content -->
-<div class="container">
-  <div class="row">
-    <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1">
-      <!-- 归档列表 -->
+<h2 id="Do-the-Classification"><a href="#Do-the-Classification" class="headerlink" title="Do the Classification"></a>Do the Classification</h2><p>After getting the features, we can do the classification easily by using a 2DConvNet with which we are familiar. But I will train 3 ConvNets on each feature to compare those 3 features. </p>
+<h3 id="1DConv-on-Waveform"><a href="#1DConv-on-Waveform" class="headerlink" title="1DConv on Waveform"></a>1DConv on Waveform</h3><p>Here is the code:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">x_tr_s=x_tr_s.reshape((<span class="number">-1</span>, x_tr.shape[<span class="number">1</span>], <span class="number">1</span>))</span><br><span class="line">input=layers.Input(shape=(<span class="number">16000</span>, <span class="number">1</span>))</span><br><span class="line">x=layers.Conv1D(<span class="number">128</span>, <span class="number">7</span>, strides=<span class="number">2</span>, padding=<span class="string">'same'</span>)(input)</span><br><span class="line">x=layers.BatchNormalization()(x)</span><br><span class="line">x=layers.LeakyReLU(alpha=<span class="number">0.2</span>)(x)</span><br><span class="line"></span><br><span class="line">x=layers.Conv1D(<span class="number">128</span>, <span class="number">7</span>, strides=<span class="number">2</span>, padding=<span class="string">'same'</span>)(x)</span><br><span class="line">x=layers.BatchNormalization()(x)</span><br><span class="line">x=layers.LeakyReLU(alpha=<span class="number">0.2</span>)(x)</span><br><span class="line"></span><br><span class="line">x=layers.Conv1D(<span class="number">128</span>, <span class="number">7</span>, strides=<span class="number">2</span>, padding=<span class="string">'same'</span>)(x)</span><br><span class="line">x=layers.BatchNormalization()(x)</span><br><span class="line">x=layers.LeakyReLU(alpha=<span class="number">0.2</span>)(x)</span><br><span class="line"></span><br><span class="line">x=layers.Flatten()(x)</span><br><span class="line">x=layers.Dropout(<span class="number">0.3</span>)(x)</span><br><span class="line"></span><br><span class="line">output=layers.Dense(<span class="number">10</span>, activation=<span class="string">'softmax'</span>)(x)</span><br><span class="line">model=keras.models.Model(inputs=input, outputs=output)</span><br><span class="line">model.compile(optimizer=<span class="string">'nadam'</span>, loss=<span class="string">'sparse_categorical_crossentropy'</span>, metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line">history=model.fit(x_tr_s, y_tr, epochs=<span class="number">20</span>, batch_size=<span class="number">32</span>, validation_split=<span class="number">0.2</span>)</span><br></pre></td></tr></table></figure>
 
-      
+<p>I just change a 2DConvNet into 1DConvNet, and the result is far from satisfactory, </p>
+<p><img src="http://tvax3.sinaimg.cn/large/006dgyGJgy1gplbsr0u3uj30j40d73z3.jpg" alt="1"></p>
+<p>The Net cannot generalize well on validation set, it only achieve a 45% accuracy on validation set. By reading papers, I realize that to achieve a good performance requires the using of ResNet or Transformer. We must do feature extraction if we insist a simple ConvNet.</p>
+<h3 id="2DConvNet-on-STFT"><a href="#2DConvNet-on-STFT" class="headerlink" title="2DConvNet on STFT"></a>2DConvNet on STFT</h3><p>Here is the code:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ip=keras.layers.Input(shape=train_stft.shape[<span class="number">1</span>:])</span><br><span class="line">x=keras.layers.Conv2D(<span class="number">256</span>, kernel_size=(<span class="number">4</span>, <span class="number">4</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>)(ip)</span><br><span class="line">x=keras.layers.LeakyReLU(alpha=<span class="number">0.2</span>)(x)</span><br><span class="line"></span><br><span class="line">x=keras.layers.Conv2D(<span class="number">128</span>, kernel_size=(<span class="number">4</span>, <span class="number">4</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>)(x)</span><br><span class="line">x=keras.layers.BatchNormalization()(x)</span><br><span class="line">x=keras.layers.LeakyReLU(alpha=<span class="number">0.2</span>)(x)</span><br><span class="line"></span><br><span class="line">x=keras.layers.Flatten()(x)</span><br><span class="line">x=keras.layers.Dropout(<span class="number">0.3</span>)(x)</span><br><span class="line">x=keras.layers.Dense(<span class="number">100</span>, activation=<span class="string">'relu'</span>)(x)</span><br><span class="line">x=keras.layers.Dense(<span class="number">10</span>, activation=<span class="string">'softmax'</span>)(x)</span><br><span class="line"></span><br><span class="line">model=keras.Model(inputs=ip, outputs=x)</span><br><span class="line">model.compile(optimizer=<span class="string">'nadam'</span>, loss=<span class="string">'sparse_categorical_crossentropy'</span>, metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line"></span><br><span class="line">history=model.fit(train_stft, y_tr, epochs=<span class="number">20</span>, batch_size=<span class="number">32</span>, validation_split=<span class="number">0.2</span>)</span><br></pre></td></tr></table></figure>
 
-      <!-- 归档列表 -->
+<p>  The result is better:</p>
+<p><img src="http://tva4.sinaimg.cn/large/006dgyGJgy1gplbyniy4zj30ob09r3z1.jpg" alt="1"></p>
+<p>Actually, there are more features in stft, 1025*32&gt;16000. But we do get a better performance. Why? In my opinion, after doing stft, we transform long time dependency into short space dependency. So, the task becomes easier.</p>
+<h3 id="2DConvNet-on-MFCC"><a href="#2DConvNet-on-MFCC" class="headerlink" title="2DConvNet on MFCC"></a>2DConvNet on MFCC</h3><p>MFCC may be the most important feature of audio, here is a code to perform classification on the mfccs of audios:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ip=keras.layers.Input(shape=(<span class="number">20</span>, <span class="number">44</span>, <span class="number">1</span>))</span><br><span class="line">x=keras.layers.Conv2D(<span class="number">256</span>, kernel_size=(<span class="number">4</span>, <span class="number">4</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>)(ip)</span><br><span class="line">x=keras.layers.LeakyReLU(alpha=<span class="number">0.2</span>)(x)</span><br><span class="line"></span><br><span class="line">x=keras.layers.Conv2D(<span class="number">128</span>, kernel_size=(<span class="number">4</span>, <span class="number">4</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>)(x)</span><br><span class="line">x=keras.layers.BatchNormalization()(x)</span><br><span class="line">x=keras.layers.LeakyReLU(alpha=<span class="number">0.2</span>)(x)</span><br><span class="line"></span><br><span class="line">x=keras.layers.Flatten()(x)</span><br><span class="line">x=keras.layers.Dropout(<span class="number">0.3</span>)(x)</span><br><span class="line">x=keras.layers.Dense(<span class="number">100</span>, activation=<span class="string">'relu'</span>)(x)</span><br><span class="line">x=keras.layers.Dense(<span class="number">10</span>, activation=<span class="string">'softmax'</span>)(x)</span><br><span class="line"></span><br><span class="line">model=keras.Model(inputs=ip, outputs=x)</span><br><span class="line">model.compile(optimizer=<span class="string">'nadam'</span>, loss=<span class="string">'sparse_categorical_crossentropy'</span>, metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line"></span><br><span class="line">history=model.fit(train_mfcc, y_tr, epochs=<span class="number">10</span>, batch_size=<span class="number">32</span>, validation_split=<span class="number">0.2</span>)</span><br></pre></td></tr></table></figure>
 
-      
-      <div class="one-tag-list">
-        <span class="fa fa-calendar-times-o listing-seperator" id="2021">
-          <span class="tag-text">2021</span>
-        </span>
-        <ul>
+<p>And the result is far better than the above 2 nets:</p>
+<p><img src="http://tvax1.sinaimg.cn/large/006dgyGJgy1gplc564yujj30ds097t92.jpg" alt="1"></p>
+<p>It can achieve a 90% accuracy easily on validation set.</p>
+
+
+        <hr>
+        <!-- Pager -->
+        <ul class="pager">
           
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            04-16
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/04/16/Audio-classification/" style="color: #0085a1">
-              <span>
-                An Audio Classification Project
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
           
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            04-08
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/04/08/InfoGAN/" style="color: #0085a1">
-              <span>
-                Information Maximum GAN
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            04-01
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/04/01/WGAN+GP/" style="color: #0085a1">
-              <span>
-                Improved Training method for WGAN
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            03-25
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/03/25/cGAN/" style="color: #0085a1">
-              <span>
-                Generate the Specific Data You Want
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            03-19
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/03/19/To-Learn-the-Distribution-of-Data/" style="color: #0085a1">
-              <span>
-                To Learn the Distribution of the Data
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            03-11
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/03/11/Dimensionality-reduction/" style="color: #0085a1">
-              <span>
-                Dimensionality reduction
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            03-04
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/03/04/Ensemble-Learning/" style="color: #0085a1">
-              <span>
-                Ensemble Learning
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            01-19
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/01/19/How-to-evaluate-a-GAN/" style="color: #0085a1">
-              <span>
-                How to evaluate a GAN
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            01-12
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/01/12/Varitional-Autoencoder/" style="color: #0085a1">
-              <span>
-                Variational Autoencoder
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            01-07
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2021/01/07/Weekly-Log/" style="color: #0085a1">
-              <span>
-                Weekly Log
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          <li class="next">
+            <a href="/2021/04/08/InfoGAN/" data-toggle="tooltip" data-placement="top" title="Information Maximum GAN">Next Post &rarr;</a>
           </li>
           
         </ul>
-      </div>
-      
-      <div class="one-tag-list">
-        <span class="fa fa-calendar-times-o listing-seperator" id="2020">
-          <span class="tag-text">2020</span>
-        </span>
-        <ul>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            12-29
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2020/12/29/Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN/" style="color: #0085a1">
-              <span>
-                Failed Training and Mode Collapse of a Vanilla GAN
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-          <!-- <li class="listing-item">
-                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-                  </li> -->
-          <li>
-            12-23
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2020/12/23/2020-12-21-2020-12-25/" style="color: #0085a1">
-              <span>
-                Changtao's weekly log (12/25)
-              </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-          </li>
-          
-        </ul>
-      </div>
-      
 
+        
+        <!-- tip start -->
+        <div class="tip">
+          <p>
+            If you like this blog or find it useful for you, you are also welcome to share this blog, so that more people can participate in it. If the images used in the blog infringe your copyright, please contact the author to delete them. Thank you !
+          </p>
+        </div>
+        <!-- tip end -->
+        
 
-    </div>
-  </div>
+        
+        <!-- Sharing Srtart -->
+        <!-- Social Social Share Post -->
+<!-- Docs:https://github.com/overtrue/share.js -->
+
+<div class="social-share" data-initialized="true" data-disabled="tencent ,douban ,qzone ,linkedin ,facebook ,google ,diandian" data-wechat-qrcode-helper="" align="center">
+  <ul class="list-inline text-center social-share-ul">
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-twitter">
+        <i class="fa fa-twitter fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a class="social-share-icon icon-wechat">
+        <i class="fa fa-weixin fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-weibo">
+        <i class="fa fa-weibo fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon icon-qq">
+        <i class="fa fa-qq fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+    <li class="social-share-li">
+      <a target="_blank" class="social-share-icon" href="mailto:?subject=An Audio Classification Project&body=Hi,I found this website and thought you might like it http://hnqmz.github.io/2021/04/16/Audio-classification/">
+        <i class="fa fa-envelope fa-1x" aria-hidden="true"></i>
+      </a>
+    </li>
+  </ul>
 </div>
 
+<!-- css & js -->
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css"> -->
+<script defer="defer" async="true" src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
 
-      <!-- 如果开启评论功能 -->
-      
-    </div>
+        <!-- Sharing End -->
+        
+        <hr>
 
-    <!-- Sidebar Container -->
-<div class="
-    col-lg-3 col-lg-offset-0
-    col-md-3 col-md-offset-0
-    col-sm-12
-    col-xs-12
-    sidebar-container
-">
+        <!-- comments start -->
+        <!-- 1. gitalk comment -->
+
+
+
+<!-- 2. gitment comment -->
+
+
+
+<!-- 3. disqus comment -->
+
+
+        <!-- comments end -->
+        <hr>
+
+      </div>
+
+      <!-- Catalog: Tabe of Content -->
+      <!-- Table of Contents -->
+
     
+      <aside id="sidebar">
+        <div id="toc" class="toc-article">
+        <strong class="toc-title">Contents</strong>
+        
+          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Image-Vs-Audio"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Image Vs Audio</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Do-the-Classification"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">Do the Classification</span></a><ol class="toc-nav-child"><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#1DConv-on-Waveform"><span class="toc-nav-number">2.1.</span> <span class="toc-nav-text">1DConv on Waveform</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2DConvNet-on-STFT"><span class="toc-nav-number">2.2.</span> <span class="toc-nav-text">2DConvNet on STFT</span></a></li><li class="toc-nav-item toc-nav-level-3"><a class="toc-nav-link" href="#2DConvNet-on-MFCC"><span class="toc-nav-number">2.3.</span> <span class="toc-nav-text">2DConvNet on MFCC</span></a></li></ol></li></ol>
+        
+        </div>
+      </aside>
+    
+
+
+      <!-- Sidebar Container -->
+      <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
         <!-- Featured Tags -->
-
-<section>
-  <!-- no hr -->
-  <h5><a href="/tags/">FEATURED TAGS</a></h5>
-  <div class="tags">
-    
-    
-    <a href="/tags/#Coding, Statistics" title="Coding, Statistics" rel="1">Coding, Statistics</a>
-    
-    
-    
-    <a href="/tags/#Generative Model, Deep Learning" title="Generative Model, Deep Learning" rel="1">Generative Model, Deep Learning</a>
-    
-    
-  </div>
-</section>
-
-
-        <hr>
-    
-        <!-- Short About -->
-<section class="visible-md visible-lg">
-  <h5><a href="/about/">ABOUT ME</a></h5>
-  <div class="short-about">
-
-    
-    <img id="avatar_pic" src="/img/avatar/fatpeople.jpg" alt="avatar_pic" style="box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);
-    -moz-box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);
-    -webkit-box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);" />
-    
-
-    
-    <p>This guy knows nothing</p>
-    
-
-    <!-- SNS Link -->
-    <ul class="list-inline">
-      
-
-      
-      <li>
-        <a target="_blank" href="https://github.com/hnqmz">
-          <span class="fa-stack fa-lg">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-          </span>
-        </a>
-      </li>
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-      
-
-    </ul>
-  </div>
-</section>
-
-        <hr>
-    
         
-<!-- <h5>RECENT POSTS</h5> -->
-<h5><a href="/">RECENT POSTS</a></h5>
-<div class="widget">
-  <ul>
-    
-    <a href="../../../2021/04/16/Audio-classification/">
-      <li>An Audio Classification Project</li>
-    </a>
-    
-    <a href="../../../2021/04/08/InfoGAN/">
-      <li>Information Maximum GAN</li>
-    </a>
-    
-    <a href="../../../2021/04/01/WGAN+GP/">
-      <li>Improved Training method for WGAN</li>
-    </a>
-    
-    <a href="../../../2021/03/25/cGAN/">
-      <li>Generate the Specific Data You Want</li>
-    </a>
-    
-    <a href="../../../2021/03/19/To-Learn-the-Distribution-of-Data/">
-      <li>To Learn the Distribution of the Data</li>
-    </a>
-    
-  </ul>
-</div>
+        <section>
+          <!-- no hr -->
+          <h5>
+            <a href="/tags/">FEATURED TAGS</a>
+          </h5>
+          <div class="tags">
+            
+          </div>
+        </section>
+        
 
-
-        <hr>
-    
         <!-- Friends Blog -->
-
-
-        <hr>
-    
         
-    <!-- <h5>ARCHIVES</h5> -->
-    <h5><a href="/archives/">ARCHIVES</a></h5>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="">April 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="../03/">March 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="../01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="../../2020/12/">December 2020</a><span class="archive-list-count">2</span></li></ul>
+      </div>
     </div>
-
-
-        <hr>
-    
-        <!-- Categories -->
-
-<!-- <h5>categories</h5> -->
-<h5><a href="/categories/">CATEGORIES</a></h5>
-<div class="widget">
-  <ul>
-    
-    <a href="/categories/#Machine Learning">
-      <li>Machine Learning</li>
-    </a>
-    
-    <a href="/categories/#Deep Learning">
-      <li>Deep Learning</li>
-    </a>
-    
-    <a href="/categories/#Generative Model">
-      <li>Generative Model</li>
-    </a>
-    
-    <a href="/categories/#Weekly Log">
-      <li>Weekly Log</li>
-    </a>
-    
-  </ul>
-</div>
-
-
-        <hr>
-    
-</div>
-
-    
   </div>
-</div>
+</article>
+
+
+
+<!-- anchorjs start -->
+<!-- async load function -->
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script type="text/javascript">
+  // async load function
+  function async (u, c) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) {
+      o.addEventListener('load', function(e) {
+        c(null, e);
+      }, false);
+    }
+    s.parentNode.insertBefore(o, s);
+  };
+</script>
+<script type="text/javascript">
+  //anchor-js, Doc:http://bryanbraun.github.io/anchorjs/
+  async ("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js", function() {
+    anchors.options = {
+      visible: 'hover',
+      placement: 'left',
+      // icon: 'ℬ'
+      icon: '❡'
+    };
+    anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+  });
+</script>
+<style>
+  /* place left on bigger screen */
+  @media all and (min-width: 800px) {
+    .anchorjs-link {
+      position: absolute;
+      left: -0.75em;
+      font-size: 1.1em;
+      margin-top: -0.1em;
+    }
+  }
+</style>
+
+<!-- anchorjs end -->
+
 
 
 	<!-- Footer (contains ThemeColor、viewer) -->
