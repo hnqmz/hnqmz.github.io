@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://hnqmz.github.io/2021/05/14/On%20the%20difference/</loc>
+    
+    <lastmod>2021-05-14</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://hnqmz.github.io/2021/05/08/Semi-Learning/</loc>
     
     <lastmod>2021-05-08</lastmod>
@@ -121,14 +128,14 @@
   </url>
   
   <url>
-    <loc>http://hnqmz.github.io/categories/index.html</loc>
+    <loc>http://hnqmz.github.io/archive/index.html</loc>
     
     <lastmod>2020-12-24</lastmod>
     
   </url>
   
   <url>
-    <loc>http://hnqmz.github.io/archive/index.html</loc>
+    <loc>http://hnqmz.github.io/categories/index.html</loc>
     
     <lastmod>2020-12-24</lastmod>
     
@@ -137,22 +144,22 @@
 
   <url>
     <loc>http://hnqmz.github.io/</loc>
-    <lastmod>2021-05-08</lastmod>
+    <lastmod>2021-05-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   
   <url>
-    <loc>http://hnqmz.github.io/tags/Generative-Model-Deep-Learning/</loc>
-    <lastmod>2021-05-08</lastmod>
+    <loc>http://hnqmz.github.io/tags/Coding-Statistics/</loc>
+    <lastmod>2021-05-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>http://hnqmz.github.io/tags/Coding-Statistics/</loc>
-    <lastmod>2021-05-08</lastmod>
+    <loc>http://hnqmz.github.io/tags/Generative-Model-Deep-Learning/</loc>
+    <lastmod>2021-05-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -161,28 +168,35 @@
   
   <url>
     <loc>http://hnqmz.github.io/categories/Machine-Learning/</loc>
-    <lastmod>2021-05-08</lastmod>
+    <lastmod>2021-05-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://hnqmz.github.io/categories/Deep-Learning/</loc>
-    <lastmod>2021-05-08</lastmod>
+    <lastmod>2021-05-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://hnqmz.github.io/categories/Generative-Model/</loc>
-    <lastmod>2021-05-08</lastmod>
+    <lastmod>2021-05-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://hnqmz.github.io/categories/Machine-Learning-Software/</loc>
+    <lastmod>2021-05-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://hnqmz.github.io/categories/Weekly-Log/</loc>
-    <lastmod>2021-05-08</lastmod>
+    <lastmod>2021-05-14</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
