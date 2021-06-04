@@ -195,13 +195,6 @@
   </url>
   
   <url>
-    <loc>http://hnqmz.github.io/categories/Machine-Learning-Software/</loc>
-    <lastmod>2021-06-04</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://hnqmz.github.io/categories/Deep-Learning/</loc>
     <lastmod>2021-06-04</lastmod>
     <changefreq>daily</changefreq>
@@ -209,7 +202,7 @@
   </url>
   
   <url>
-    <loc>http://hnqmz.github.io/categories/Weekly-Log/</loc>
+    <loc>http://hnqmz.github.io/categories/Machine-Learning-Software/</loc>
     <lastmod>2021-06-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -217,6 +210,13 @@
   
   <url>
     <loc>http://hnqmz.github.io/categories/Generative-Model/</loc>
+    <lastmod>2021-06-04</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://hnqmz.github.io/categories/Weekly-Log/</loc>
     <lastmod>2021-06-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
