@@ -47,12 +47,12 @@
 
   <!-- Pygments Highlight CSS -->
   
-<link rel="stylesheet" href="../../../../css/highlight.css">
-<link rel="stylesheet" href="../../../../css/widget.css">
-<link rel="stylesheet" href="../../../../css/rocket.css">
-<link rel="stylesheet" href="../../../../css/signature.css">
-<link rel="stylesheet" href="../../../../css/catalog.css">
-<link rel="stylesheet" href="../../../../css/livemylife.css">
+<link rel="stylesheet" href="../../../css/highlight.css">
+<link rel="stylesheet" href="../../../css/widget.css">
+<link rel="stylesheet" href="../../../css/rocket.css">
+<link rel="stylesheet" href="../../../css/signature.css">
+<link rel="stylesheet" href="../../../css/catalog.css">
+<link rel="stylesheet" href="../../../css/livemylife.css">
 
 
   
@@ -105,10 +105,10 @@
   <!--[if lt IE 9]> <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script> <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script> <![endif]-->
 
   <!-- ga & ba script hoook -->
-  <link rel="canonical" href="http://hnqmz.github.io/2021/01/07/Weekly-Log/">
+  <link rel="canonical" href="http://hnqmz.github.io/archives/2021/06/">
   <title>
     
-    Weekly Log - This guy knows nothing
+    This guy knows nothing
     
   </title>
 <meta name="generator" content="Hexo 4.2.1"></head>
@@ -256,8 +256,8 @@
 
   <style type="text/css">
     header.intro-header {
-       /*post*/
-        background-image: url('');
+       /*page*/
+        background-image: url('/img/header_img/archive_bg2.jpg');
       
     }
 
@@ -275,21 +275,10 @@
       <div class="row">
         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
           
-          <div class="post-heading">
-            <div class="tags">
-              
-            </div>
-            <h1>Weekly Log</h1>
-            <h2 class="subheading">2020/1/7</h2>
-            <span class="meta">
-              Posted by Changtao Li on
-              2021-01-07
-            </span>
-
-
-            
-
-
+          <div class="site-heading">
+            <h1>Changtao&#39;s Blog</h1>
+            <!--<hr class="small">-->
+            <span class="subheading">A place to write down my thoughts</span>
           </div>
           
         </div>
@@ -330,203 +319,495 @@
 	Friends Blog、
 	anchorjs、
 	) -->
-	<!-- Modify by Yu-Hsuan Yen -->
-<!-- Post Content -->
-<article>
-  <div class="container">
-    <div class="row">
-      <!-- Post Container -->
-      <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1 post-container">
+	<!-- Main Content -->
+<div class="container">
+  <div class="row">
+    
 
-        <p>The work I have done in this week can be summarized as follows:</p>
-<h2 id="Train-a-WGAN"><a href="#Train-a-WGAN" class="headerlink" title="Train a WGAN"></a>Train a WGAN</h2><p>WGAN is a quite complex neural network. To fully understand it, some knowledge of optimal transport are required. I will not explain the principles behind WGAN here, instead, I will just write a WGAN and use it to generate some pictures. The structure of a WGAN is very similar to a vanilla GAN, to evolve from a vanilla GAN to WGAN, we just need use another objective function, namely Earth Mover distance, and use a linear activation at the final layer of the discriminator. Of course, we need do weight clip for the weights of the ‘discriminator’/critic. </p>
-<p>Here is some key part of the code:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ClipConstraint</span><span class="params">(Constraint)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, clip_value)</span>:</span></span><br><span class="line">        self.clip_value=clip_value</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, weights)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> backend.clip(weights, -self.clip_value, self.clip_value)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_config</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="string">'clip_value'</span>: self.clip_value&#125;</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wasserstein_loss</span><span class="params">(y_true, y_pred)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> backend.mean(y_true*y_pred)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">define_critic</span><span class="params">(in_shape=<span class="params">(<span class="number">28</span>, <span class="number">28</span>, <span class="number">1</span>)</span>)</span>:</span></span><br><span class="line">    init=RandomNormal(stddev=<span class="number">0.02</span>)</span><br><span class="line">    const=ClipConstraint(<span class="number">0.01</span>)</span><br><span class="line">    model=Sequential()</span><br><span class="line">    model.add(Conv2D(<span class="number">64</span>, (<span class="number">4</span>, <span class="number">4</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>, kernel_initializer=init, kernel_constraint=const, input_shape=in_shape))</span><br><span class="line">    model.add(BatchNormalization()) <span class="comment">#we should take off batch normalization</span></span><br><span class="line">    model.add(LeakyReLU(alpha=<span class="number">0.2</span>))</span><br><span class="line"></span><br><span class="line">    model.add(Conv2D(<span class="number">64</span>, (<span class="number">4</span>, <span class="number">4</span>), strides=(<span class="number">2</span>, <span class="number">2</span>), padding=<span class="string">'same'</span>, kernel_initializer=init, kernel_constraint=const))</span><br><span class="line">    model.add(BatchNormalization())</span><br><span class="line">    model.add(LeakyReLU(alpha=<span class="number">0.2</span>))</span><br><span class="line"></span><br><span class="line">    model.add(Flatten())</span><br><span class="line">    model.add(Dense(<span class="number">1</span>))</span><br><span class="line"></span><br><span class="line">    opt=RMSprop(lr=<span class="number">0.00005</span>)</span><br><span class="line">    model.compile(optimizer=opt, loss=wasserstein_loss)</span><br><span class="line">    <span class="keyword">return</span> model</span><br></pre></td></tr></table></figure>
+    <!-- USE SIDEBAR -->
+    <!-- Post Container -->
+    <div class="
+                col-lg-8 col-lg-offset-1
+                col-md-8 col-md-offset-1
+                col-sm-12
+                col-xs-12
+                post-container
+            ">
 
-<p>After training for 20 epochs on MNIST dataset(only pictures of 7 are used), and the training process looks like this:</p>
-<p><img src="https://tva2.sinaimg.cn/large/006dgyGJgy1gmfe7sgq5nj309s081aaa.jpg" alt="捕获"></p>
-<p>Finally, I get the following result:</p>
-<p><img src="https://tva3.sinaimg.cn/large/006dgyGJgy1gmfe6h0q9oj30c0080q3s.jpg" alt="generated_plot_0970"></p>
-<p>We can see from this picture that the result is really promising. </p>
-<h2 id="WGAN-Vs-GAN"><a href="#WGAN-Vs-GAN" class="headerlink" title="WGAN Vs GAN"></a>WGAN Vs GAN</h2><p>Before tackling with WGAN, I think it will solve all the problems I encountered when dealing with GAN, like a miracle. However, after tuning the parameters of it for over one week, I realize it is not panacea. Training a WAGN is still painful. Take this WGAN for example, I set the parameter of my network just like those in the WGAN paper, however I would always see some exploding losses and many junk pictures generated by my generator. To solve this, I have to take the batch normalization from my critic. </p>
-<h2 id="Python-IO-Programming"><a href="#Python-IO-Programming" class="headerlink" title="Python IO Programming"></a>Python IO Programming</h2><p>Neural networks are used to deal with huge amount of data. So it’s inevitable to read data from our disk and transform it into Numpy’s array format. To do so, we have to use some libraries: os, pathlib, fnmatch and glob. Functions like scandir, Path, fnmatch.fnmatch are of great help. So, I spend some time learning those standard libraries.</p>
-<h2 id="Machine-Learning"><a href="#Machine-Learning" class="headerlink" title="Machine Learning"></a>Machine Learning</h2><p>Dive even deeper into sklearn and learn more technique about this library. Test traditional machine learning algorithm on MNIST dataset. I found the result of traditional machine learning is really good.</p>
-<h2 id="Next"><a href="#Next" class="headerlink" title="Next"></a>Next</h2><p>Training a WGAN on different datasets and trying to master more parameter-tuning skills. Continue my learning of sklearn. Continue learning measure theory and Python.</p>
+      
+<!-- Main Content -->
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-1 col-md-10 col-md-offset-1">
+      <!-- 归档列表 -->
 
+      
 
-        <hr>
-        <!-- Pager -->
-        <ul class="pager">
+      <!-- 归档列表 -->
+
+      
+      <div class="one-tag-list">
+        <span class="fa fa-calendar-times-o listing-seperator" id="2021">
+          <span class="tag-text">2021</span>
+        </span>
+        <ul>
           
-          <li class="previous">
-            <a href="/2021/01/12/Varitional-Autoencoder/" data-toggle="tooltip" data-placement="top" title="Variational Autoencoder">&larr; Previous Post</a>
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            06-04
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/06/04/transferclass/" style="color: #0085a1">
+              <span>
+                Transformer in Audio Classification
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
           </li>
           
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            05-28
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/05/28/transfer/" style="color: #0085a1">
+              <span>
+                Transfer Learning in Audio Classification
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
           
-          <li class="next">
-            <a href="/2020/12/29/Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN/" data-toggle="tooltip" data-placement="top" title="Failed Training and Mode Collapse of a Vanilla GAN">Next Post &rarr;</a>
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            05-21
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/05/21/Vocoder/" style="color: #0085a1">
+              <span>
+                A WaveNet Vocoder
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            05-14
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/05/14/On the difference/" style="color: #0085a1">
+              <span>
+                On the difference between Tensorflow and Pytorch
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            05-08
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/05/08/Semi-Learning/" style="color: #0085a1">
+              <span>
+                Semi-Supervised Learning
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            04-22
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/04/22/Transformer/" style="color: #0085a1">
+              <span>
+                Transformer
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            04-16
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/04/16/Audio-classification/" style="color: #0085a1">
+              <span>
+                An Audio Classification Project
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            04-08
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/04/08/InfoGAN/" style="color: #0085a1">
+              <span>
+                Information Maximum GAN
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            04-01
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/04/01/WGAN+GP/" style="color: #0085a1">
+              <span>
+                Improved Training method for WGAN
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            03-25
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/03/25/cGAN/" style="color: #0085a1">
+              <span>
+                Generate the Specific Data You Want
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            03-19
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/03/19/To-Learn-the-Distribution-of-Data/" style="color: #0085a1">
+              <span>
+                To Learn the Distribution of the Data
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            03-11
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/03/11/Dimensionality-reduction/" style="color: #0085a1">
+              <span>
+                Dimensionality reduction
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            03-04
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/03/04/Ensemble-Learning/" style="color: #0085a1">
+              <span>
+                Ensemble Learning
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            01-19
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/01/19/How-to-evaluate-a-GAN/" style="color: #0085a1">
+              <span>
+                How to evaluate a GAN
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            01-12
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/01/12/Varitional-Autoencoder/" style="color: #0085a1">
+              <span>
+                Variational Autoencoder
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            01-07
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2021/01/07/Weekly-Log/" style="color: #0085a1">
+              <span>
+                Weekly Log
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
           </li>
           
         </ul>
+      </div>
+      
+      <div class="one-tag-list">
+        <span class="fa fa-calendar-times-o listing-seperator" id="2020">
+          <span class="tag-text">2020</span>
+        </span>
+        <ul>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            12-29
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2020/12/29/Failed-Training-and-Mode-Collapse-of-a-Vanilla-GAN/" style="color: #0085a1">
+              <span>
+                Failed Training and Mode Collapse of a Vanilla GAN
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+          <!-- <li class="listing-item">
+                  <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+                  <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+                  </li> -->
+          <li>
+            12-23
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            <a href="/2020/12/23/2020-12-21-2020-12-25/" style="color: #0085a1">
+              <span>
+                Changtao's weekly log (12/25)
+              </span>
+            </a>
+            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
+          </li>
+          
+        </ul>
+      </div>
+      
 
-        
-        <!-- tip start -->
-        <div class="tip">
-          <p>
-            If you like this blog or find it useful for you, you are also welcome to share this blog, so that more people can participate in it. If the images used in the blog infringe your copyright, please contact the author to delete them. Thank you !
-          </p>
-        </div>
-        <!-- tip end -->
-        
 
-        
-        <!-- Sharing Srtart -->
-        <!-- Social Social Share Post -->
-<!-- Docs:https://github.com/overtrue/share.js -->
+    </div>
+  </div>
+</div>
 
-<div class="social-share" data-initialized="true" data-disabled="tencent ,douban ,qzone ,linkedin ,facebook ,google ,diandian" data-wechat-qrcode-helper="" align="center">
-  <ul class="list-inline text-center social-share-ul">
-    <li class="social-share-li">
-      <a target="_blank" class="social-share-icon icon-twitter">
-        <i class="fa fa-twitter fa-1x" aria-hidden="true"></i>
-      </a>
-    </li>
-    <li class="social-share-li">
-      <a class="social-share-icon icon-wechat">
-        <i class="fa fa-weixin fa-1x" aria-hidden="true"></i>
-      </a>
-    </li>
-    <li class="social-share-li">
-      <a target="_blank" class="social-share-icon icon-weibo">
-        <i class="fa fa-weibo fa-1x" aria-hidden="true"></i>
-      </a>
-    </li>
-    <li class="social-share-li">
-      <a target="_blank" class="social-share-icon icon-qq">
-        <i class="fa fa-qq fa-1x" aria-hidden="true"></i>
-      </a>
-    </li>
-    <li class="social-share-li">
-      <a target="_blank" class="social-share-icon" href="mailto:?subject=Weekly Log&body=Hi,I found this website and thought you might like it http://hnqmz.github.io/2021/01/07/Weekly-Log/">
-        <i class="fa fa-envelope fa-1x" aria-hidden="true"></i>
-      </a>
-    </li>
+
+      <!-- 如果开启评论功能 -->
+      
+    </div>
+
+    <!-- Sidebar Container -->
+<div class="
+    col-lg-3 col-lg-offset-0
+    col-md-3 col-md-offset-0
+    col-sm-12
+    col-xs-12
+    sidebar-container
+">
+    
+        <!-- Featured Tags -->
+
+<section>
+  <!-- no hr -->
+  <h5><a href="/tags/">FEATURED TAGS</a></h5>
+  <div class="tags">
+    
+    
+    <a href="/tags/#Coding, Statistics" title="Coding, Statistics" rel="1">Coding, Statistics</a>
+    
+    
+    
+    <a href="/tags/#Generative Model, Deep Learning" title="Generative Model, Deep Learning" rel="1">Generative Model, Deep Learning</a>
+    
+    
+  </div>
+</section>
+
+
+        <hr>
+    
+        <!-- Short About -->
+<section class="visible-md visible-lg">
+  <h5><a href="/about/">ABOUT ME</a></h5>
+  <div class="short-about">
+
+    
+    <img id="avatar_pic" src="/img/avatar/fatpeople.jpg" alt="avatar_pic" style="box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);
+    -moz-box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, .5);" />
+    
+
+    
+    <p>This guy knows nothing</p>
+    
+
+    <!-- SNS Link -->
+    <ul class="list-inline">
+      
+
+      
+      <li>
+        <a target="_blank" href="https://github.com/hnqmz">
+          <span class="fa-stack fa-lg">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+          </span>
+        </a>
+      </li>
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+      
+
+    </ul>
+  </div>
+</section>
+
+        <hr>
+    
+        
+<!-- <h5>RECENT POSTS</h5> -->
+<h5><a href="/">RECENT POSTS</a></h5>
+<div class="widget">
+  <ul>
+    
+    <a href="../../../2021/06/04/transferclass/">
+      <li>Transformer in Audio Classification</li>
+    </a>
+    
+    <a href="../../../2021/05/28/transfer/">
+      <li>Transfer Learning in Audio Classification</li>
+    </a>
+    
+    <a href="../../../2021/05/21/Vocoder/">
+      <li>A WaveNet Vocoder</li>
+    </a>
+    
+    <a href="../../../2021/05/14/On%20the%20difference/">
+      <li>On the difference between Tensorflow and Pytorch</li>
+    </a>
+    
+    <a href="../../../2021/05/08/Semi-Learning/">
+      <li>Semi-Supervised Learning</li>
+    </a>
+    
   </ul>
 </div>
 
-<!-- css & js -->
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/css/share.min.css"> -->
-<script defer="defer" async="true" src="https://cdnjs.cloudflare.com/ajax/libs/social-share.js/1.0.16/js/social-share.min.js"></script>
 
-        <!-- Sharing End -->
-        
         <hr>
-
-        <!-- comments start -->
-        <!-- 1. gitalk comment -->
-
-
-
-<!-- 2. gitment comment -->
-
-
-
-<!-- 3. disqus comment -->
-
-
-        <!-- comments end -->
-        <hr>
-
-      </div>
-
-      <!-- Catalog: Tabe of Content -->
-      <!-- Table of Contents -->
-
     
-      <aside id="sidebar">
-        <div id="toc" class="toc-article">
-        <strong class="toc-title">Contents</strong>
-        
-          <ol class="toc-nav"><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Train-a-WGAN"><span class="toc-nav-number">1.</span> <span class="toc-nav-text">Train a WGAN</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#WGAN-Vs-GAN"><span class="toc-nav-number">2.</span> <span class="toc-nav-text">WGAN Vs GAN</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Python-IO-Programming"><span class="toc-nav-number">3.</span> <span class="toc-nav-text">Python IO Programming</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Machine-Learning"><span class="toc-nav-number">4.</span> <span class="toc-nav-text">Machine Learning</span></a></li><li class="toc-nav-item toc-nav-level-2"><a class="toc-nav-link" href="#Next"><span class="toc-nav-number">5.</span> <span class="toc-nav-text">Next</span></a></li></ol>
-        
-        </div>
-      </aside>
-    
-
-
-      <!-- Sidebar Container -->
-      <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
-        <!-- Featured Tags -->
-        
-        <section>
-          <!-- no hr -->
-          <h5>
-            <a href="/tags/">FEATURED TAGS</a>
-          </h5>
-          <div class="tags">
-            
-          </div>
-        </section>
-        
-
         <!-- Friends Blog -->
+
+
+        <hr>
+    
         
-      </div>
+    <!-- <h5>ARCHIVES</h5> -->
+    <h5><a href="/archives/">ARCHIVES</a></h5>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="">June 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="../05/">May 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="../04/">April 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="../03/">March 2021</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="../01/">January 2021</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="../../2020/12/">December 2020</a><span class="archive-list-count">2</span></li></ul>
     </div>
+
+
+        <hr>
+    
+        <!-- Categories -->
+
+<!-- <h5>categories</h5> -->
+<h5><a href="/categories/">CATEGORIES</a></h5>
+<div class="widget">
+  <ul>
+    
+    <a href="/categories/#Machine Learning">
+      <li>Machine Learning</li>
+    </a>
+    
+    <a href="/categories/#Machine Learning Software">
+      <li>Machine Learning Software</li>
+    </a>
+    
+    <a href="/categories/#Deep Learning">
+      <li>Deep Learning</li>
+    </a>
+    
+    <a href="/categories/#Weekly Log">
+      <li>Weekly Log</li>
+    </a>
+    
+    <a href="/categories/#Generative Model">
+      <li>Generative Model</li>
+    </a>
+    
+  </ul>
+</div>
+
+
+        <hr>
+    
+</div>
+
+    
   </div>
-</article>
-
-
-
-<!-- anchorjs start -->
-<!-- async load function -->
-<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
-<script type="text/javascript">
-  // async load function
-  function async (u, c) {
-    var d = document,
-      t = 'script',
-      o = d.createElement(t),
-      s = d.getElementsByTagName(t)[0];
-    o.src = u;
-    if (c) {
-      o.addEventListener('load', function(e) {
-        c(null, e);
-      }, false);
-    }
-    s.parentNode.insertBefore(o, s);
-  };
-</script>
-<script type="text/javascript">
-  //anchor-js, Doc:http://bryanbraun.github.io/anchorjs/
-  async ("https://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js", function() {
-    anchors.options = {
-      visible: 'hover',
-      placement: 'left',
-      // icon: 'ℬ'
-      icon: '❡'
-    };
-    anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
-  });
-</script>
-<style>
-  /* place left on bigger screen */
-  @media all and (min-width: 800px) {
-    .anchorjs-link {
-      position: absolute;
-      left: -0.75em;
-      font-size: 1.1em;
-      margin-top: -0.1em;
-    }
-  }
-</style>
-
-<!-- anchorjs end -->
-
+</div>
 
 
 	<!-- Footer (contains ThemeColor、viewer) -->
